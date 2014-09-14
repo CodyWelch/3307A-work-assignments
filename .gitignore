@@ -1,2 +1,3 @@
 #ignore my bin folder
 bin
+.DS_Store
