@@ -200,9 +200,9 @@ void login(){
     
         if(TEST){
             if(logged){
-                cout << "userID = " << userID << "\nuserType = " << userType << "\n";
+                cout << "TEST: userID = " << userID << "\nTEST: userType = " << userType << "\n";
             }else{
-                cout << "did not log in. UserID " << id << " given\n";
+                cout << "TEST: did not log in. UserID " << id << " given\n";
             }
         }
     }
