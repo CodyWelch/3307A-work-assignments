@@ -3,11 +3,25 @@
 #include<string>
 #include<iostream>
 using namespace std;
+
+//constant values used (atm) for testing login
+#define MANAGER 000
+#define MAINTENANCE 001
+#define USER 002
+
+//constant variable used to turn on/off testing mode
+#define TEST 1
+
+//global user variables, so we can always know what user is currently active, userType will be one of our three constants, userID will be their actual ID
+int userType;
+int userID;
+
+
 	/*
 	*
 	*Classes
 	*
-	*/
+	
 class Manager{
 	//open & close accounts
 	// see view critical details or 1 or all customers
@@ -37,7 +51,7 @@ class Account{
 	*
 	* Helper Functions
 	*
-	*/
+	
 bool withdraw(Account act){
 	string value;
 	float val;
@@ -138,7 +152,7 @@ bool transfer(account act){
 	*
 	* Execution Trace functions
 	* 
-	*/
+	
 class trace(){
 	// Attributes for whatever data needs to be tracked	
 }
@@ -148,23 +162,53 @@ function writeToFile(){
 	// ** Find when file must be updated??
 }
 
-
-function login(){
-	int id;
-	
-	cout << "Please enter your id./n";
-	cin >> id;
-	
-	/*
-	if(.compare(id) = 0){
-	cout << "Success! You have logged in!/n";
-	userSession();
-	*/ 
-	// Create array for valid ids
-	// Compare input to array
-	// Will need 'array or arrays' (int[])
+*/
+void login(){
+	//create necessary variables
+    int id;
+	bool logged = false;
+    
+    //begin login loop
+    while (!logged) {
+        //prompt user, get ID input
+        cout << "Please enter your id.\n";
+        cin >> id;
+        
+        //if id matches managerial role, output welcome message, change id and type variables, change logged variable to indicate successful login
+        if (id == MANAGER) {
+            cout << "Welcome, manager.\n";
+            userID = id;
+            userType = MANAGER;
+            logged = true;
+        
+        //if id matches maintenance role, output welcome message, change id and type variables, change logged variable to indicate successful login
+        }else if(id == MAINTENANCE){
+            cout << "Welcome, maintenance.\n";
+            userID = id;
+            userType = MAINTENANCE;
+            logged  = true;
+        
+        //if id matches user role, output welcome message, change id and type variables, change logged variable to indicate successful login
+        }else if(id == USER){
+            cout << "Welcome, user.\n";
+            userID = id;
+            userType = USER;
+            logged  = true;
+        }else{
+            cout << "Error, invalid ID given.\n";
+        }
+    
+        if(TEST){
+            if(logged){
+                cout << "userID = " << userID << "\nuserType = " << userType << "\n";
+            }else{
+                cout << "did not log in. UserID " << id << " given\n";
+            }
+        }
+    }
 }
 
+/*
 function userSession(customer user){
 	// Initialize
 	string command = "";
@@ -193,10 +237,10 @@ function userSession(customer user){
 		cout << "'deposit' to put money into your account";
 		cout << "'manage' to open or close an new account";
 	}
-}
+}*/
 
-int main{
-	//login();
-	userSession();	
+int main(){
+	login();
+	//userSession();
 }
 
