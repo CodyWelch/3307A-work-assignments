@@ -166,10 +166,11 @@ function writeToFile(){
 void login(){
 	//create necessary variables
     int id;
+    int attempts = 0;
 	bool logged = false;
     
     //begin login loop
-    while (!logged) {
+    while (!logged && attempts < 3) {
         //prompt user, get ID input
         cout << "Please enter your id.\n";
         cin >> id;
@@ -194,8 +195,11 @@ void login(){
             userID = id;
             userType = USER;
             logged  = true;
+            
+        //if id matches no roles, output error message and record another login attempt
         }else{
             cout << "Error, invalid ID given.\n";
+            attempts++;
         }
     
         if(TEST){
@@ -205,6 +209,15 @@ void login(){
                 cout << "TEST: did not log in. UserID " << id << " given\n";
             }
         }
+    }
+    
+    if(TEST){
+        cout << "login while loop exited\n" << attempts << " login attempts made\n";
+    }
+    
+    if(attempts == 3){
+        cout << "Too many unsuccessful login attempts, program ending.\n";
+        exit(1);
     }
 }
 
