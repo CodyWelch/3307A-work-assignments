@@ -7,7 +7,7 @@ using namespace std;
 //constant values used (atm) for testing login
 #define MANAGER 000
 #define MAINTENANCE 001
-#define USER 002
+#define CUSTOMER 002
 
 //constant variable used to turn on/off testing mode
 #define TEST 1
@@ -16,6 +16,20 @@ using namespace std;
 int userType;
 int userID;
 
+
+class User{
+	//UserType type; // 000, 001, 002
+	int userID;
+};
+
+class UserType{
+	bool Manager;
+	bool Customer;
+	bool Maintenace;
+};
+
+
+//if(User.UserType.Manager){}
 
 	/*
 	*
@@ -32,13 +46,11 @@ class Manager{
 class Customer{
 	// manageable # (Ex: 100)
 	// must has either or both a 
-	// savings account/chequings account
-	// -only his/her account permissions
-	// can use multiple operations within
-	// -one session
+	// savings account/chequings account only his/her account permissions
+	// can use multiple operations within one session
 	int id;
 };
-
+*/
 class Account{
 	bool open;
 	bool close;
@@ -91,7 +103,8 @@ float withdraw(Account act,float value){
 		}	
 	}
 }
-
+*/
+/*
 bool deposit(Account act, int value){
 	string value;
 	value = null;
@@ -109,7 +122,7 @@ bool deposit(Account act, int value){
 	}
 	return false;
 }
-
+/*
 bool transfer(account act){
 	account toWithdraw;
 	account toDeposit;
@@ -190,10 +203,10 @@ void login(){
             logged  = true;
         
         //if id matches user role, output welcome message, change id and type variables, change logged variable to indicate successful login
-        }else if(id == USER){
+        }else if(id == CUSTOMER){
             cout << "Welcome, user.\n";
             userID = id;
-            userType = USER;
+            userType = CUSTOMER;
             logged  = true;
             
         //if id matches no roles, output error message and record another login attempt
