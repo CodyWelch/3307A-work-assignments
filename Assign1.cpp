@@ -17,6 +17,20 @@ int currentUserType;
 int currentUserID;
 
 
+class User{
+	//UserType type; // 000, 001, 002
+	int userID;
+};
+
+class UserType{
+	bool Manager;
+	bool Customer;
+	bool Maintenace;
+};
+
+
+//if(User.UserType.Manager){}
+
 	/*
 	*
 	*Classes
@@ -32,13 +46,11 @@ class Manager{
 class Customer{
 	// manageable # (Ex: 100)
 	// must has either or both a 
-	// savings account/chequings account
-	// -only his/her account permissions
-	// can use multiple operations within
-	// -one session
+	// savings account/chequings account only his/her account permissions
+	// can use multiple operations within one session
 	int id;
 };
-
+*/
 class Account{
 	bool open;
 	bool close;
@@ -91,7 +103,8 @@ float withdraw(Account act,float value){
 		}	
 	}
 }
-
+*/
+/*
 bool deposit(Account act, int value){
 	string value;
 	value = null;
@@ -109,7 +122,7 @@ bool deposit(Account act, int value){
 	}
 	return false;
 }
-
+/*
 bool transfer(account act){
 	account toWithdraw;
 	account toDeposit;
