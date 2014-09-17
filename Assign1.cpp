@@ -13,8 +13,8 @@ using namespace std;
 #define TEST 1
 
 //global user variables, so we can always know what user is currently active, userType will be one of our three constants, userID will be their actual ID
-int userType;
-int userID;
+int currentUserType;
+int currentUserID;
 
 
 class User{
@@ -192,22 +192,22 @@ void login(){
         //if id matches managerial role, output welcome message, change id and type variables, change logged variable to indicate successful login
         if (id == MANAGER) {
             cout << "Welcome, manager.\n";
-            userID = id;
-            userType = MANAGER;
+            currentUserID = id;
+            currentUserType = MANAGER;
             logged = true;
         
         //if id matches maintenance role, output welcome message, change id and type variables, change logged variable to indicate successful login
         }else if(id == MAINTENANCE){
             cout << "Welcome, maintenance.\n";
-            userID = id;
-            userType = MAINTENANCE;
+            currentUserID = id;
+            currentUserType = MAINTENANCE;
             logged  = true;
         
-        //if id matches user role, output welcome message, change id and type variables, change logged variable to indicate successful login
+        //if id matches customer role, output welcome message, change id and type variables, change logged variable to indicate successful login
         }else if(id == CUSTOMER){
             cout << "Welcome, user.\n";
-            userID = id;
-            userType = CUSTOMER;
+            currentUserID = id;
+            currentUserType = CUSTOMER;
             logged  = true;
             
         //if id matches no roles, output error message and record another login attempt
@@ -218,7 +218,7 @@ void login(){
     
         if(TEST){
             if(logged){
-                cout << "TEST: userID = " << userID << "\nTEST: userType = " << userType << "\n";
+                cout << "TEST: userID = " << currentUserID << "\nTEST: userType = " << currentUserType << "\n";
             }else{
                 cout << "TEST: did not log in. UserID " << id << " given\n";
             }
