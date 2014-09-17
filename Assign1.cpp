@@ -20,6 +20,7 @@ int userID;
 class User{
 	//UserType type; // 000, 001, 002
 	int userID;
+	
 };
 
 class UserType{
@@ -27,7 +28,6 @@ class UserType{
 	bool Customer;
 	bool Maintenace;
 };
-
 
 //if(User.UserType.Manager){}
 
@@ -104,22 +104,23 @@ float withdraw(Account act,float value){
 	}
 }
 */
-/*
+
 bool deposit(Account act, int value){
-	string value;
-	value = null;
-	while(value == null){
+	//string value;
+	//value = null;
+	//while(value == null){
 		cout << "Please enter a value to deposit";
 		cin >> value;
-		if(value.compare("back")){
+		/*if(value.compare("back")){
 			return false;
-		}else if(value < 0){
+		}else */
+		if(value < 0){
 			cout << "Cannot deposit a negative value";
 		}else if(value > 0){
 			act.amount += value;
 			return true;	
 		}
-	}
+	//}
 	return false;
 }
 /*
@@ -234,8 +235,8 @@ void login(){
     }
 }
 
-/*
-function userSession(customer user){
+
+void userSession(User person){
 	// Initialize
 	string command = "";
 	string moneyIn = "deposit";
@@ -249,7 +250,7 @@ function userSession(customer user){
 	
 	// Deposit & Withdraw
 	// Could use a switch, or more efficient route...
-	if(command.compare(moneyIn) = 0){
+/*	if(command.compare(moneyIn) = 0){
 		deposit(user);
 	}else if(command.compare(moneyOut) = 0){
 		cin >> command;
@@ -262,11 +263,11 @@ function userSession(customer user){
 		cout << "'withdraw' to take money out your account";
 		cout << "'deposit' to put money into your account";
 		cout << "'manage' to open or close an new account";
-	}
-}*/
+	}*/
+}
 
 int main(){
 	login();
-	//userSession();
+	userSession();
 }
 
