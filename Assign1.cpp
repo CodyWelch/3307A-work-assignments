@@ -22,10 +22,80 @@ class User{
 	int userID;
 };
 
+//the UserType class used for denoting a user's type
 class UserType{
-	bool Manager;
-	bool Customer;
-	bool Maintenace;
+    //the three bools used for determining which type the user is
+	bool manager;
+    bool maintenace;
+    bool customer;
+    
+    public:
+    //basic constructor
+    UserType(){
+        manager = false;
+        maintenace = false;
+        customer = false;
+    }
+    
+    //overloaded constructor
+    UserType(int givenType){
+        if (givenType > 002) {
+            throw "Attempted to create a UserType with an invalid type value.\n";
+        } else {
+            if (givenType == MANAGER) {
+                manager = true;
+                maintenace = false;
+                customer = false;
+            }else if(givenType == MAINTENANCE){
+                manager = false;
+                maintenace = true;
+                customer =false;
+            }else{
+                manager = false;
+                maintenace =false;
+                customer = true;
+            }
+        }
+
+    }
+    
+    //setters
+    void setType(int givenType){
+        if (givenType > 002) {
+            throw "Attempted to set UserType to an invalid type.\n";
+        } else {
+            if (givenType == MANAGER) {
+                manager = true;
+                maintenace = false;
+                customer = false;
+            }else if(givenType == MAINTENANCE){
+                manager = false;
+                maintenace = true;
+                customer =false;
+            }else{
+                manager = false;
+                maintenace =false;
+                customer = true;
+            }
+        }
+    }
+    
+    //getter
+    int getType(){
+        if (manager == true && maintenace == false && customer == false) {
+            return MANAGER;
+        }else if(manager == false && maintenace == true && customer == false){
+            return MAINTENANCE;
+        }else if(manager == false && maintenace == false && customer == true){
+            return CUSTOMER;
+        }else{
+            throw "userType is set to an invalid value";
+        }
+    }
+    
+    
+    
+    
 };
 
 
