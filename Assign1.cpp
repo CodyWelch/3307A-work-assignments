@@ -15,11 +15,13 @@ using namespace std;
 //global user variables, so we can always know what user is currently active, userType will be one of our three constants, userID will be their actual ID
 int currentUserType;
 int currentUserID;
+bool loggedIn;
 
-
-class User{
-	//UserType type; // 000, 001, 002
-	int userID;
+class Account{
+	bool open;
+	bool close;
+	public:
+		float amount;
 };
 
 //the UserType class used for denoting a user's type
@@ -98,6 +100,19 @@ class UserType{
     
 };
 
+class User{
+	UserType type; // 000, 001, 002
+	int userID;
+	Account act;
+};
+
+
+class Customer: public User{
+	Account act;
+}currentCustomer;
+
+
+
 
 //if(User.UserType.Manager){}
 
@@ -121,14 +136,6 @@ class Customer{
 	int id;
 };
 */
-class Account{
-	bool open;
-	bool close;
-	public:
-		float amount;
-};
-
-
 	/*
 	*
 	* Helper Functions
@@ -174,22 +181,25 @@ float withdraw(Account act,float value){
 	}
 }
 */
-/*
-bool deposit(Account act, int value){
-	string value;
-	value = null;
-	while(value == null){
-		cout << "Please enter a value to deposit";
+
+bool deposit(/*Account act*/){
+	//string value;
+	float value;
+	//value = null;
+	//while(value == null){
+		cout << "Please enter a value to deposit\n";
 		cin >> value;
-		if(value.compare("back")){
+		/*if(value.compare("back")){
 			return false;
-		}else if(value < 0){
-			cout << "Cannot deposit a negative value";
+		}else */
+		if(value < 0){
+			cout << "Cannot deposit a negative value\n";
 		}else if(value > 0){
-			act.amount += value;
+			cout << "Depositing: " << value << "\n";
+			//act.amount += value;
 			return true;	
 		}
-	}
+	//}
 	return false;
 }
 /*
@@ -304,8 +314,8 @@ void login(){
     }
 }
 
-/*
-function userSession(customer user){
+
+void userSession(){
 	// Initialize
 	string command = "";
 	string moneyIn = "deposit";
@@ -313,30 +323,33 @@ function userSession(customer user){
 	string moneyOut = "withdraw";
 	//int moneyOutAmt = 0; 
 		
+	loggedIn = true;
 	// User interface
-	cout << "Please enter a command (help for cmd list)";
-	cin >> command;
-	
-	// Deposit & Withdraw
-	// Could use a switch, or more efficient route...
-	if(command.compare(moneyIn) = 0){
-		deposit(user);
-	}else if(command.compare(moneyOut) = 0){
+	while(loggedIn){
+		cout << "Please enter a command (help for cmd list)\n";
 		cin >> command;
-		withdraw(user, moneyOutAmt);
-	}else if(command.compare(transfer) = 0){
-		transfer();	
-	}else if(command.compare(transfer) = 0){
-		transfer();	
-	}else if{command.compare(help)
-		cout << "'withdraw' to take money out your account";
-		cout << "'deposit' to put money into your account";
-		cout << "'manage' to open or close an new account";
+		
+		// Deposit & Withdraw
+		if(command.compare(moneyIn) == 0){
+			
+			deposit(/*currentCustomer.act*/);
+		}/*else if(command.compare(moneyOut) == 0){
+			cin >> command;
+			withdraw(user, moneyOutAmt);
+		}else if(command.compare(transfer) == 0){
+			transfer();	
+		}else if(command.compare(transfer) == 0){
+			transfer();	
+		}else if{command.compare(help)
+			cout << "'withdraw' to take money out your account";
+			cout << "'deposit' to put money into your account";
+			cout << "'manage' to open or close an new account";
+		}*/
 	}
-}*/
+}
 
 int main(){
 	login();
-	//userSession();
+	userSession();
 }
 
