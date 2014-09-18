@@ -21,6 +21,7 @@ bool loggedIn;
 class Account{
 	bool opened;
     double amount;
+    string type;
     
 public:
     //constructor
@@ -57,6 +58,11 @@ public:
     void close(){
         opened = false;
         amount = 0;
+    }
+    
+    string getType(){
+    	if(type=="chequing" || type=="savings")
+    		return type;
     }
 
 };
@@ -240,7 +246,7 @@ bool withdraw(Account act){
 	double value;
 	// null checks
 	
-	cout << "Please enter a value to withdraw";
+	cout << "Please enter a value to withdraw\n";
 	cin >> value;
 	//val = value;
 
@@ -248,7 +254,8 @@ bool withdraw(Account act){
 		cout << "Cancelling Withdrawal.";
 		return false;
 	}else*/ if(act.getAmount() - value < 0.0 ){
-		cout << "Insufficient funds";
+		cout << "Insufficient funds\n";
+		cout << "You have only $" << act.getAmount() << "in your " << act.getType() << ".\n";
 		return false;
 	}else{
 		//act.amount -= value;
