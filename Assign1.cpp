@@ -419,6 +419,33 @@ bool checkAccountStatus(Account act){
 	}
 }
 
+void openAccount(){
+	string command;
+	string cheqAct = "chequing";
+	string savingsAct = "savings";
+	cout << "Please choose what account type you want to open('chequing' or 'savings')\n";
+	cin >> command;
+	
+	if(command.compare(cheqAct) == 0){
+		if(!currentCustomer.chequing.isOpen()){
+			cout << "Chequing account is now open.\n";
+			currentCustomer.chequing.open();
+		}else{
+			cout << "Savings account is already open.\n";
+		}
+	}else if(command.compare(savingsAct) == 0){
+		if(!currentCustomer.savings.isOpen()){
+			cout << "Savings account is now open.\n";
+			currentCustomer.savings.open();
+		}else{
+			cout << "Savings account is already open.\n";
+		}
+	}
+}
+
+void closeAccount(){	
+}
+
 Account selectAccount(){
 	string command;
 	string cheqAct = "chequing";
@@ -428,13 +455,13 @@ Account selectAccount(){
 		cin >> command;
 	
 		if(command.compare(cheqAct) == 0){
-			if(checkAccountStatus(currentCustomer.chequing)){
+			//if(checkAccountStatus(currentCustomer.chequing)){
 				return currentCustomer.chequing;
-			}
+			//}
 		}else if(command.compare(savingsAct) == 0){
-			if(checkAccountStatus(currentCustomer.savings)){
+			//if(checkAccountStatus(currentCustomer.savings)){
 				return currentCustomer.savings;
-			}
+			//}
 		}
 	}
 }
@@ -482,14 +509,18 @@ void userSession(){
 		// Deposit & Withdraw
 		if(command.compare(moneyIn) == 0){
 			currentAccount = selectAccount();
-			deposit(currentAccount);
+			if(checkAccountStatus(currentAccount)){
+				deposit(currentAccount);
+			}
 		}else if(command.compare(moneyOut) == 0){
 			currentAccount = selectAccount();
-			withdraw(currentAccount);
+			if(checkAccountStatus(currentAccount)){
+				withdraw(currentAccount);
+			}
 		}else if(command.compare(transfer) == 0){
 			selectTransferAccounts();
 		}else if(command.compare(open) == 0){
-				//openAccount();
+				openAccount();
 		}else if(command.compare(close) == 0){
 				//closeAccount();
 		}else if(command.compare(cheqAccount) == 0){
