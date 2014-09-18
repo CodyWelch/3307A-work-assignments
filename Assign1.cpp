@@ -104,14 +104,14 @@ public:
 class UserType{
     //the three bools used for determining which type the user is
 	bool manager;
-    bool maintenace;
+    bool maintenance;
     bool customer;
     
     public:
     //basic constructor
     UserType(){
         manager = false;
-        maintenace = false;
+        maintenance = false;
         customer = false;
     }
     
@@ -122,21 +122,21 @@ class UserType{
         } else {
             if (givenType == MANAGER) {
                 manager = true;
-                maintenace = false;
+                maintenance = false;
                 customer = false;
             }else if(givenType == MAINTENANCE){
                 manager = false;
-                maintenace = true;
+                maintenance = true;
                 customer =false;
             }else{
                 manager = false;
-                maintenace =false;
+                maintenance =false;
                 customer = true;
             }
         }
 
     }
-    
+
     //setters
     void setType(int givenType){
         if (givenType > 002) {
@@ -144,15 +144,15 @@ class UserType{
         } else {
             if (givenType == MANAGER) {
                 manager = true;
-                maintenace = false;
+                maintenance = false;
                 customer = false;
             }else if(givenType == MAINTENANCE){
                 manager = false;
-                maintenace = true;
+                maintenance = true;
                 customer =false;
             }else{
                 manager = false;
-                maintenace =false;
+                maintenance =false;
                 customer = true;
             }
         }
@@ -160,11 +160,11 @@ class UserType{
     
     //getter
     int getType(){
-        if (manager == true && maintenace == false && customer == false) {
+        if (manager == true && maintenance == false && customer == false) {
             return MANAGER;
-        }else if(manager == false && maintenace == true && customer == false){
+        }else if(manager == false && maintenance == true && customer == false){
             return MAINTENANCE;
-        }else if(manager == false && maintenace == false && customer == true){
+        }else if(manager == false && maintenance == false && customer == true){
             return CUSTOMER;
         }else{
             throw "userType is set to an invalid value";
@@ -179,14 +179,58 @@ class UserType{
 class User{
 	UserType type;
 	int userID;
-};
+    
+public:
+    //constructor
+    User(){
+        
+    }
+    
+    //overloaded constructor
+    User(int givenType, int givenID){
+        setType(givenType);
+        setID(givenID);
+    }
+    
+    //getter for type
+    UserType getType(){
+        return type;
+    }
+    
+    //getter for ID
+    int getID(){
+        return userID;
+    }
+    
+    //setter for type
+    void setType(int givenType){
+        type.setType(givenType);
+    }
+    
+    //setter for ID
+    void setID(int givenID){
+        userID = givenID;
+    }
+}currentUser, manager, maintenance;
 
 
 class Customer: public User{
 	Account savings;
-    //Chequing chequing;
-    Account chequing;
+    Chequing chequing;
 }currentUser;
+    
+public:
+    //function to see whether the customer has a savings account
+    bool hasSavings(){
+        return savings.isOpen();
+    }
+    
+    //function to see whether the customer has a chequings account
+    bool hasChequing(){
+        return chequing.isOpen();
+    }
+  
+};
 
 
 
@@ -438,6 +482,15 @@ void userSession(){
 			cout << "'manage' to open or close an new account";
 		}*/
 	}
+}
+
+//a function for all setup operations
+void setUp(){
+    //create and prepare the manager and maintenance users
+    manager.setType(MANAGER);
+    manager.setID(000);
+    maintenance.setType(MAINTENANCE);
+    maintenance.setID(001);
 }
 
 int main(){
