@@ -410,12 +410,12 @@ void login(){
 }
 
 bool checkAccountStatus(Account act){
-	if(cheqAct.isOpen()){
+	if(act.isOpen()){
 		cout << "Opening chequing account.\n";
 		return true;
 	}else{
 		cout << "Chequing account is not open.\n";
-		cout << "Please open a chequing account before proceeding.\n"
+		cout << "Please open a chequing account before proceeding.\n";
 	}
 }
 
@@ -428,11 +428,11 @@ Account selectAccount(){
 		cin >> command;
 	
 		if(command.compare(cheqAct) == 0){
-			if(checkAccountStatus(currentCustomer.chequing){
+			if(checkAccountStatus(currentCustomer.chequing)){
 				return currentCustomer.chequing;
 			}
 		}else if(command.compare(savingsAct) == 0){
-			if(checkAccountStatus(currentCustomer.savings){
+			if(checkAccountStatus(currentCustomer.savings)){
 				return currentCustomer.savings;
 			}
 		}
