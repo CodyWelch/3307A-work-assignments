@@ -184,9 +184,9 @@ class User{
 
 class Customer: public User{
 	Account savings;
-    Chequing chequing;
-    
-}currentCustomer;
+    //Chequing chequing;
+    Account chequing;
+}currentUser;
 
 
 
@@ -259,7 +259,7 @@ float withdraw(Account act,float value){
 }
 */
 
-bool deposit(/*Account act*/){
+bool deposit(Account act){
 	//string value;
 	float value;
 	//value = null;
@@ -279,10 +279,8 @@ bool deposit(/*Account act*/){
 	//}
 	return false;
 }
-/*
-bool transfer(account act){
-	account toWithdraw;
-	account toDeposit;
+// Transfer funds between accounts
+/*bool transfer(Account source,Account destination){
 	int transferValue;
 	
 	while(true){
@@ -317,7 +315,7 @@ bool transfer(account act){
 	cout << toDeposit.name + " " + toDeposit.value + " /n";
 	return true;	
 }
-	
+/*	
 	/*
 	*
 	* Execution Trace functions
@@ -391,33 +389,50 @@ void login(){
     }
 }
 
+Account selectAccount(){
+	string command;
+	string cheqAct = "chequing";
+	string savingsAct = "savings";
+	cout << "Please select an account type ('chequing' or 'savings')\n";
+	cin >> command;
+	if(command.compare(cheqAct) == 0){
+		cout << "Opening chequing account. n";
+		return currentUser.getchequing;
+	}else if(command.compare(savingsAct) == 0){
+		cout << "Opening savings account. n";
+		return currentUser.savings;
+	}
+}
 
 void userSession(){
 	// Initialize
 	string command = "";
 	string moneyIn = "deposit";
-	//int moneyInAmt = 0;
 	string moneyOut = "withdraw";
-	//int moneyOutAmt = 0; 
-		
+	string cheqAccount = "chequing";
+	string savingsAccount = "savings";
+	
+	Account currentAccount; 
+	Account otherAccount;
+	
 	loggedIn = true;
 	// User interface
 	while(loggedIn){
-		cout << "Please enter a command (help for cmd list)\n";
+		cout << "Please enter a valid command (help for cmd list)\n";
+		cout << "Current Account: ";
 		cin >> command;
 		
 		// Deposit & Withdraw
 		if(command.compare(moneyIn) == 0){
-			
-			deposit(/*currentCustomer.act*/);
-		}/*else if(command.compare(moneyOut) == 0){
-			cin >> command;
-			withdraw(user, moneyOutAmt);
+			currentAccount = selectAccount();
+			deposit(currentAccount);
+		}else if(command.compare(moneyOut) == 0){
+			currentAccount = selectAccount();
+			withdraw(currentAccount);
 		}else if(command.compare(transfer) == 0){
-			transfer();	
-		}else if(command.compare(transfer) == 0){
-			transfer();	
-		}else if{command.compare(help)
+			currentAccount = selectAccount();
+			transfer(currentAccount, );	
+		/*}else if{command.compare(help) == 0){
 			cout << "'withdraw' to take money out your account";
 			cout << "'deposit' to put money into your account";
 			cout << "'manage' to open or close an new account";
