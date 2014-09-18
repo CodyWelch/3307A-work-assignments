@@ -100,44 +100,49 @@ public:
     }
 };
 
-//the UserType class used for denoting a user's type
-class UserType{
-    //the three bools used for determining which type the user is
-	bool manager;
+
+class User{
+	int type;
+	int userID;
+    bool manager;
     bool maintenance;
     bool customer;
     
-    public:
-    //basic constructor
-    UserType(){
-        manager = false;
-        maintenance = false;
-        customer = false;
+public:
+    //constructor
+    User(){
+        
     }
     
     //overloaded constructor
-    UserType(int givenType){
-        if (givenType > 002) {
-            throw "Attempted to create a UserType with an invalid type value.\n";
-        } else {
-            if (givenType == MANAGER) {
-                manager = true;
-                maintenance = false;
-                customer = false;
-            }else if(givenType == MAINTENANCE){
-                manager = false;
-                maintenance = true;
-                customer =false;
-            }else{
-                manager = false;
-                maintenance =false;
-                customer = true;
-            }
+    User(int givenType, int givenID){
+        try{
+          setType(givenType);
+        }catch(string message){
+            throw message;
         }
-
+        setID(givenID);
     }
-
-    //setters
+    
+    //getter for type
+    int getType(){
+        if (manager == true && maintenance == false && customer == false) {
+            return MANAGER;
+        }else if(manager == false && maintenance == true && customer == false){
+            return MAINTENANCE;
+        }else if(manager == false && maintenance == false && customer == true){
+            return CUSTOMER;
+        }else{
+            throw "userType is set to an invalid value";
+        }
+    }
+    
+    //getter for ID
+    int getID(){
+        return userID;
+    }
+    
+    //setter for type
     void setType(int givenType){
         if (givenType > 002) {
             throw "Attempted to set UserType to an invalid type.\n";
@@ -158,59 +163,26 @@ class UserType{
         }
     }
     
-    //getter
-    int getType(){
-        if (manager == true && maintenance == false && customer == false) {
-            return MANAGER;
-        }else if(manager == false && maintenance == true && customer == false){
-            return MAINTENANCE;
-        }else if(manager == false && maintenance == false && customer == true){
-            return CUSTOMER;
-        }else{
-            throw "userType is set to an invalid value";
-        }
-    }
-    
-    
-    
-    
-};
-
-class User{
-	UserType type;
-	int userID;
-    
-public:
-    //constructor
-    User(){
-        
-    }
-    
-    //overloaded constructor
-    User(int givenType, int givenID){
-        setType(givenType);
-        setID(givenID);
-    }
-    
-    //getter for type
-    UserType getType(){
-        return type;
-    }
-    
-    //getter for ID
-    int getID(){
-        return userID;
-    }
-    
-    //setter for type
-    void setType(int givenType){
-        type.setType(givenType);
-    }
-    
     //setter for ID
     void setID(int givenID){
         userID = givenID;
     }
+    
+    //method to see if the user is a manager
+    bool isManager(){
+        return manager;
+    }
+    
+    //method to see if they user is maintenance
+    bool isMaintenance(){
+        return maintenance;
+    }
+    
+    //method to see if the user is a customer
+    bool isCustomer(){
+        return customer;
+    }
+    
 }currentUser, manager, maintenance;
 
 
