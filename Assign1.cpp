@@ -17,11 +17,87 @@ int currentUserType;
 int currentUserID;
 bool loggedIn;
 
+//the base class Account used for modeling different accounts
 class Account{
-	bool open;
-	bool close;
-	public:
-		float amount;
+	bool opened;
+    double amount;
+    
+public:
+    //constructor
+    Account(){
+        amount = 0;
+        opened = false;
+    }
+    
+    //function to check if the account is open
+    bool isOpen(){
+        if(opened){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    //getter for the current balance
+    double getAmount(){
+        return amount;
+    }
+    
+    //setter for teh balance
+    void setAmount(double givenAmt){
+        amount = givenAmt;
+    }
+    
+    //a function to open a given account
+    void open(){
+        opened = true;
+    }
+    
+    //function to close an account and clear it
+    void close(){
+        opened = false;
+        amount = 0;
+    }
+
+};
+
+//the subclass Chequing
+class Chequing : public Account{
+    double limit;
+    double fine;
+    
+public:
+    //default constructor
+    Chequing(){
+        limit = 1000.0;
+        fine = 2.0;
+    }
+    
+    //overloaded constructor for setting a limit and fine too
+    Chequing(double givenLim, double givenFine){
+        limit = givenLim;
+        fine = givenFine;
+    }
+    
+    //getter for limit
+    double getLimit(){
+        return limit;
+    }
+    
+    //getter for fine
+    double getFine(){
+        return fine;
+    }
+    
+    //setter for limit
+    void setLimit(double givenLim){
+        limit = givenLim;
+    }
+    
+    //setter for the fine
+    void setFine(double givenFine){
+        fine = givenFine;
+    }
 };
 
 //the UserType class used for denoting a user's type
@@ -101,14 +177,15 @@ class UserType{
 };
 
 class User{
-	UserType type; // 000, 001, 002
+	UserType type;
 	int userID;
-	Account act;
 };
 
 
 class Customer: public User{
-	Account act;
+	Account savings;
+    Chequing chequing;
+    
 }currentCustomer;
 
 
