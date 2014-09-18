@@ -215,11 +215,12 @@ public:
 
 
 class Customer: public User{
-	Account savings;
-    Chequing chequing;
-}currentUser;
+	public:
+		Account savings;
+	    Chequing chequing;
+}currentCustomer;
     
-public:
+/*public:
     //function to see whether the customer has a savings account
     bool hasSavings(){
         return savings.isOpen();
@@ -230,7 +231,7 @@ public:
         return chequing.isOpen();
     }
   
-};
+};*/
 
 
 
@@ -261,29 +262,29 @@ class Customer{
 	*
 	* Helper Functions
 	*
-	
+	*/
 bool withdraw(Account act){
-	string value;
-	float val;
+	//string value;
+	double value;
 	// null checks
 	
 	cout << "Please enter a value to withdraw";
 	cin >> value;
-	val = value;
+	//val = value;
 
-	if(value.compare("back")){
+	/*if(value.compare("back")){
 		cout << "Cancelling Withdrawal.";
 		return false;
-	} else if(act.amount - ()value < 0 ){
+	}else*/ if(act.getAmount() - value < 0.0 ){
 		cout << "Insufficient funds";
 		return false;
 	}else{
-		act.amount -= value;
+		//act.amount -= value;
+		act.setAmount(act.getAmount() - value);
 		return true;
 	}	
-	// flag for success
 }
-
+/*
 // overload for transfering funds
 float withdraw(Account act,float value){
 	
@@ -324,9 +325,9 @@ bool deposit(Account act){
 	return false;
 }
 // Transfer funds between accounts
-/*bool transfer(Account source,Account destination){
+bool Transfer(Account source,Account destination){
 	int transferValue;
-	
+	/*
 	while(true){
 	cout << "Please enter the first account/n";
 	cout << "(This will be the account funds are withdrawn from)/n";
@@ -356,7 +357,7 @@ bool deposit(Account act){
 	cout << "Successfully transferred funds!";
 	cout << "Your new balances are: /n";
 	cout << toWithdraw.name + " " + toWithdraw.value + " /n";
-	cout << toDeposit.name + " " + toDeposit.value + " /n";
+	cout << toDeposit.name + " " + toDeposit.value + " /n";*/
 	return true;	
 }
 /*	
@@ -437,15 +438,37 @@ Account selectAccount(){
 	string command;
 	string cheqAct = "chequing";
 	string savingsAct = "savings";
+	while(true){
 	cout << "Please select an account type ('chequing' or 'savings')\n";
 	cin >> command;
-	if(command.compare(cheqAct) == 0){
-		cout << "Opening chequing account. n";
-		return currentUser.getchequing;
-	}else if(command.compare(savingsAct) == 0){
-		cout << "Opening savings account. n";
-		return currentUser.savings;
+	
+		if(command.compare(cheqAct) == 0){
+			cout << "Opening chequing account. \n";
+			return currentCustomer.chequing;
+		}else if(command.compare(savingsAct) == 0){
+			cout << "Opening savings account. \n";
+			return currentCustomer.savings;
+		}
 	}
+}
+
+void selectTransferAccounts(){
+	string command;
+	string cheqAct = "chequing";
+	string savingsAct = "savings";
+	
+	cout << "Please enter the source account type ('chequing' or 'savings')\n";
+	cin >> command;
+	if(command.compare(cheqAct) == 0){
+		cout << "Source: chequing account. \n";
+		cout << "Destination: savings account. \n";
+		//Transfer(currentUser.getChequing(),currentUser.getSavings())
+	}else if(command.compare(savingsAct) == 0){
+		cout << "Source: savings account. n";
+		cout << "Destination: chequing account. \n";
+		//Transfer(currentUser.getSavings(),currentUser.getChequing())
+		Transfer(currentCustomer.savings,currentCustomer.chequing);
+	}	
 }
 
 void userSession(){
@@ -455,6 +478,10 @@ void userSession(){
 	string moneyOut = "withdraw";
 	string cheqAccount = "chequing";
 	string savingsAccount = "savings";
+	string transfer = "transfer";
+	string help = "help";
+	string open = "open";
+	string close = "close";
 	
 	Account currentAccount; 
 	Account otherAccount;
@@ -463,7 +490,6 @@ void userSession(){
 	// User interface
 	while(loggedIn){
 		cout << "Please enter a valid command (help for cmd list)\n";
-		cout << "Current Account: ";
 		cin >> command;
 		
 		// Deposit & Withdraw
@@ -474,13 +500,23 @@ void userSession(){
 			currentAccount = selectAccount();
 			withdraw(currentAccount);
 		}else if(command.compare(transfer) == 0){
-			currentAccount = selectAccount();
-			transfer(currentAccount, );	
-		/*}else if{command.compare(help) == 0){
-			cout << "'withdraw' to take money out your account";
-			cout << "'deposit' to put money into your account";
-			cout << "'manage' to open or close an new account";
-		}*/
+			selectTransferAccounts();
+		}else if(command.compare(open) == 0){
+				//openAccount();
+		}else if(command.compare(close) == 0){
+				//closeAccount();
+		}else if(command.compare(cheqAccount) == 0){
+			//cout << currentCustomer.chequing << "\n";
+		}else if(command.compare(savingsAccount) == 0){
+			//cout << currentCustomer.savings << "\n";
+		}else if(command.compare(help) == 0){
+			cout << "'withdraw' to take money out your account\n";
+			cout << "'deposit' to put money into your account\n";
+			cout << "'open' to open a new account\n";
+			cout << "'close' to close a new account\n";
+			cout << "'chequing' to view balance in chequing account\n";
+			cout << "'savings' to view balance in savings account\n";
+		}
 	}
 }
 
