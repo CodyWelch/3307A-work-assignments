@@ -31,9 +31,8 @@ class UserType{
 };
 
 class User{
-	UserType type; // 000, 001, 002
+	UserType type;
 	int userID;
-	Account act;
 };
 
 
@@ -125,7 +124,7 @@ bool deposit(/*Account act*/){
 		if(value < 0){
 			cout << "Cannot deposit a negative value\n";
 		}else if(value > 0){
-			cout << "Depositing: " << value << "\n";
+			cout << "Depositing: $" << value << "\n";
 			//act.amount += value;
 			return true;	
 		}
