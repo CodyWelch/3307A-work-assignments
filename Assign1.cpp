@@ -17,17 +17,163 @@ int currentUserType;
 int currentUserID;
 bool loggedIn;
 
+//the base class Account used for modeling different accounts
 class Account{
-	bool open;
-	bool close;
-	public:
-		float amount;
+	bool opened;
+    double amount;
+    
+public:
+    //constructor
+    Account(){
+        amount = 0;
+        opened = false;
+    }
+    
+    //function to check if the account is open
+    bool isOpen(){
+        if(opened){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    //getter for the current balance
+    double getAmount(){
+        return amount;
+    }
+    
+    //setter for teh balance
+    void setAmount(double givenAmt){
+        amount = givenAmt;
+    }
+    
+    //a function to open a given account
+    void open(){
+        opened = true;
+    }
+    
+    //function to close an account and clear it
+    void close(){
+        opened = false;
+        amount = 0;
+    }
+
 };
 
+//the subclass Chequing
+class Chequing : public Account{
+    double limit;
+    double fine;
+    
+public:
+    //default constructor
+    Chequing(){
+        limit = 1000.0;
+        fine = 2.0;
+    }
+    
+    //overloaded constructor for setting a limit and fine too
+    Chequing(double givenLim, double givenFine){
+        limit = givenLim;
+        fine = givenFine;
+    }
+    
+    //getter for limit
+    double getLimit(){
+        return limit;
+    }
+    
+    //getter for fine
+    double getFine(){
+        return fine;
+    }
+    
+    //setter for limit
+    void setLimit(double givenLim){
+        limit = givenLim;
+    }
+    
+    //setter for the fine
+    void setFine(double givenFine){
+        fine = givenFine;
+    }
+};
+
+//the UserType class used for denoting a user's type
 class UserType{
-	bool Manager;
-	bool Customer;
-	bool Maintenace;
+    //the three bools used for determining which type the user is
+	bool manager;
+    bool maintenace;
+    bool customer;
+    
+    public:
+    //basic constructor
+    UserType(){
+        manager = false;
+        maintenace = false;
+        customer = false;
+    }
+    
+    //overloaded constructor
+    UserType(int givenType){
+        if (givenType > 002) {
+            throw "Attempted to create a UserType with an invalid type value.\n";
+        } else {
+            if (givenType == MANAGER) {
+                manager = true;
+                maintenace = false;
+                customer = false;
+            }else if(givenType == MAINTENANCE){
+                manager = false;
+                maintenace = true;
+                customer =false;
+            }else{
+                manager = false;
+                maintenace =false;
+                customer = true;
+            }
+        }
+
+    }
+    
+    //setters
+    void setType(int givenType){
+        if (givenType > 002) {
+            throw "Attempted to set UserType to an invalid type.\n";
+        } else {
+            if (givenType == MANAGER) {
+                manager = true;
+                maintenace = false;
+                customer = false;
+            }else if(givenType == MAINTENANCE){
+                manager = false;
+                maintenace = true;
+                customer =false;
+            }else{
+                manager = false;
+                maintenace =false;
+                customer = true;
+            }
+        }
+    }
+    
+    //getter
+    int getType(){
+        if (manager == true && maintenace == false && customer == false) {
+            return MANAGER;
+        }else if(manager == false && maintenace == true && customer == false){
+            return MAINTENANCE;
+        }else if(manager == false && maintenace == false && customer == true){
+            return CUSTOMER;
+        }else{
+            throw "userType is set to an invalid value";
+        }
+    }
+    
+    
+    
+    
 };
 
 class User{
@@ -37,7 +183,9 @@ class User{
 
 
 class Customer: public User{
-	Account act;
+	Account savings;
+    Chequing chequing;
+    
 }currentCustomer;
 
 
