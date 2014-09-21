@@ -214,9 +214,6 @@ forward_list<Customer> customerList;
   
 };*/
 
-
-
-
 //if(User.UserType.Manager){}
 
 	/*
@@ -247,8 +244,7 @@ class Customer{
 bool withdraw(Account act){
 	//string value;
 	double value;
-	// null checks
-	
+	// null checks	
 	cout << "Please enter a value to withdraw\n";
 	cin >> value;
 	//val = value;
@@ -416,20 +412,32 @@ void login(){
     }
 }
 
+bool checkAccountStatus(Account act){
+	if(act.isOpen()){
+		cout << "Opening chequing account.\n";
+		return true;
+	}else{
+		cout << "Chequing account is not open.\n";
+		cout << "Please open a chequing account before proceeding.\n";
+	}
+}
+
 Account selectAccount(){
 	string command;
 	string cheqAct = "chequing";
 	string savingsAct = "savings";
 	while(true){
-	cout << "Please select an account type ('chequing' or 'savings')\n";
-	cin >> command;
+		cout << "Please select an account type ('chequing' or 'savings')\n";
+		cin >> command;
 	
 		if(command.compare(cheqAct) == 0){
-			cout << "Opening chequing account. \n";
-			return currentCustomer.chequing;
+			if(checkAccountStatus(currentCustomer.chequing)){
+				return currentCustomer.chequing;
+			}
 		}else if(command.compare(savingsAct) == 0){
-			cout << "Opening savings account. \n";
-			return currentCustomer.savings;
+			if(checkAccountStatus(currentCustomer.savings)){
+				return currentCustomer.savings;
+			}
 		}
 	}
 }
