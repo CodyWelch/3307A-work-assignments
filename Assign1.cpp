@@ -1,5 +1,5 @@
 #include<stdio.h>
-
+#include<forward_list>
 #include<string>
 #include<iostream>
 using namespace std;
@@ -197,7 +197,10 @@ class Customer: public User{
 		Account savings;
 	    Chequing chequing;
 }currentCustomer;
-    
+
+//declaring customer data structure
+forward_list<Customer> customerList;
+
 /*public:
     //function to see whether the customer has a savings account
     bool hasSavings(){
@@ -508,8 +511,17 @@ void setUp(){
     maintenance.setID(001);
 }
 
+//a helper function to test out our code
+void test(){
+    
+}
+
 int main(){
-	login();
-	userSession();
+    if(TEST){
+        test();
+    }else{
+        login();
+        userSession();
+    }
 }
 
