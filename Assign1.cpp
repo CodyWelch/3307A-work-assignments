@@ -244,9 +244,31 @@ public:
     //method for inserting new Customers into the list
     void insert(Customer cust){
         if(contains(cust.getID())){
-            throw "List already contains a Customer with that ID";
+            throw "List already contains a Customer with that ID\n";
         }else{
             list.push_front(cust);
+        }
+    }
+    
+    //method for finding a particular Customer
+    Customer * find(int id){
+        if (!contains(id)) {
+            throw "There is no customer with the given ID\n";
+        } else {
+            forward_list<Customer>::iterator startIter = list.begin();
+            forward_list<Customer>::iterator endIter = list.end();
+            Customer * itemAddress;
+            
+            for (; startIter != endIter; ++startIter) {
+                itemAddress = &*startIter;
+                
+                if(itemAddress->getID() == id){
+                    return itemAddress;
+                }
+            }
+            
+            throw "Error: Customer not found\n";
+
         }
     }
 };
@@ -590,6 +612,21 @@ void test(){
     cout << list.contains(125) << "\n\n";
     
     list.print();
+    
+    cout << "\n";
+    
+    //test the find method and its methodology
+    try {
+        Customer * c1Place = list.find(123);
+        c1Place->setID(555);
+        
+        list.print();
+    } catch (string message) {
+        cout << message;
+    }
+    
+    
+    
 }
 
 int main(){
