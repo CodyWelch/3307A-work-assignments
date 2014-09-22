@@ -1,5 +1,5 @@
 #include<stdio.h>
-#include<forward_list>
+//#include<forward_list>
 #include<string>
 #include<iostream>
 using namespace std;
@@ -10,7 +10,9 @@ using namespace std;
 #define CUSTOMER 002
 
 //constant variable used to turn on/off testing mode
-#define TEST 1
+#define TEST 0
+
+#define cheqString "chequing"
 
 //global user variables, so we can always know what user is currently active, userType will be one of our three constants, userID will be their actual ID
 int currentUserType;
@@ -193,13 +195,20 @@ public:
 
 
 class Customer: public User{
-	public:
-		Account savings;
-	    Chequing chequing;
+	Account savings;
+	Chequing chequing;
+public:
+	Account GetSavings(){
+		return savings;
+	}
+	Chequing GetChequing(){
+		return chequing;
+	}
+	
 }currentCustomer;
 
 //declaring customer data structure
-forward_list<Customer> customerList;
+//forward_list<Customer> customerList;
 
 /*public:
     //function to see whether the customer has a savings account
@@ -359,6 +368,15 @@ void login(){
     int id;
     int attempts = 0;
 	bool logged = false;
+	
+/*	int input;
+while(!(cin >> input))
+{
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << endl <<"Column size must be an integer"<< endl << endl;
+    cout << "Enter the number of columns: " ;
+}*/
     
     //begin login loop
     while (!logged && attempts < 3) {
@@ -430,9 +448,10 @@ void openAccount(){
 	cin >> command;
 	
 	if(command.compare(cheqAct) == 0){
-		if(!currentCustomer.chequing.isOpen()){
+		//if(!(currentCustomer.chequing.isOpen()){
+		if(!(currentCustomer.GetChequing()).isOpen()){
 			cout << "Chequing account is now open.\n";
-			currentCustomer.chequing.open();
+			currentCustomer.GetChequing().open();
 		}else{
 			cout << "Savings account is already open.\n";
 		}
