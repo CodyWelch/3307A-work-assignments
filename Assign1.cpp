@@ -193,11 +193,18 @@ public:
     
 }currentUser, manager, maintenance;
 
-
+//a class that extends our User class for the purpose of modelling customers
 class Customer: public User{
 	Account savings;
 	Chequing chequing;
 public:
+	Customer(int ID):User(CUSTOMER, ID){
+        
+    }
+    
+    Customer(){
+        
+    }
 	Account GetSavings(){
 		return savings;
 	}
@@ -207,8 +214,73 @@ public:
 	
 }currentCustomer;
 
-//declaring customer data structure
-//forward_list<Customer> customerList;
+//a class for storing our customer list in
+class customerList{
+    //forward_list<Customer> list;
+    
+public:
+    //method for printing all contents of the class
+    void print(){
+        forward_list<Customer>::iterator startIter = list.begin();
+        forward_list<Customer>::iterator endIter = list.end();
+        Customer temp;
+        cout << "Customer ID\tChequing\tSavings\n";
+        
+        for (; startIter!=endIter; ++startIter) {
+            temp = *startIter;
+            cout << temp.getID() << "\t\t" << temp.chequing.getAmount() << "\t\t" << temp.savings.getAmount() << "\n";
+        }
+    }
+    
+    //method for checking whether a Customer with a given ID already exists in the database
+    bool contains(int id){
+        forward_list<Customer>::iterator startIter = list.begin();
+        forward_list<Customer>::iterator endIter = list.end();
+        Customer temp;
+        
+        for (; startIter != endIter; ++startIter) {
+            temp = *startIter;
+            
+            if(temp.getID() == id){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    //method for inserting new Customers into the list
+    void insert(Customer cust){
+        if(contains(cust.getID())){
+            throw "List already contains a Customer with that ID\n";
+        }else{
+            list.push_front(cust);
+        }
+    }
+    
+    //method for finding a particular Customer
+    Customer * find(int id){
+        if (!contains(id)) {
+            throw "There is no customer with the given ID\n";
+        } else {
+            forward_list<Customer>::iterator startIter = list.begin();
+            forward_list<Customer>::iterator endIter = list.end();
+            Customer * itemAddress;
+            
+            for (; startIter != endIter; ++startIter) {
+                itemAddress = &*startIter;
+                
+                if(itemAddress->getID() == id){
+                    return itemAddress;
+                }
+            }
+            
+            throw "Error: Customer not found\n";
+
+        }
+    }
+};
+>>>>>>> f4ffa553f4a436e29fc94a6f41f0d09fed03004e
 
 /*public:
     //function to see whether the customer has a savings account
@@ -363,6 +435,8 @@ function writeToFile(){
 }
 
 */
+
+
 void login(){
 	//create necessary variables
     int id;
@@ -571,6 +645,37 @@ void setUp(){
 
 //a helper function to test out our code
 void test(){
+   //test customer insertion and printing
+    customerList list;
+    Customer c1(123);
+    Customer c2(124);
+    Customer c3(125);
+    
+    list.insert(c1);
+    list.insert(c2);
+    list.insert(c3);
+    
+    cout << list.contains(123) << "\n";
+    
+    cout << list.contains(124) << "\n";
+    
+    cout << list.contains(125) << "\n\n";
+    
+    list.print();
+    
+    cout << "\n";
+    
+    //test the find method and its methodology
+    try {
+        Customer * c1Place = list.find(123);
+        c1Place->setID(555);
+        
+        list.print();
+    } catch (string message) {
+        cout << message;
+    }
+    
+    
     
 }
 
