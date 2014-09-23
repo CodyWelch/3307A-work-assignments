@@ -1,5 +1,5 @@
 #include<stdio.h>
-//#include<forward_list>
+#include<forward_list>
 #include<string>
 #include<iostream>
 using namespace std;
@@ -24,14 +24,14 @@ class Account{
 	bool opened;
     double amount;
     string type;
-    
+
 public:
     //constructor
     Account(){
         amount = 0;
         opened = false;
     }
-    
+
     //function to check if the account is open
     bool isOpen(){
         if(opened){
@@ -40,28 +40,28 @@ public:
             return false;
         }
     }
-    
+
     //getter for the current balance
     double getAmount(){
         return amount;
     }
-    
+
     //setter for teh balance
     void setAmount(double givenAmt){
         amount = givenAmt;
     }
-    
+
     //a function to open a given account
     void open(){
         opened = true;
     }
-    
+
     //function to close an account and clear it
     void close(){
         opened = false;
         amount = 0;
     }
-    
+
     string getType(){
     	if(type=="chequing" || type=="savings")
     		return type;
@@ -73,35 +73,35 @@ public:
 class Chequing : public Account{
     double limit;
     double fine;
-    
+
 public:
     //default constructor
     Chequing(){
         limit = 1000.0;
         fine = 2.0;
     }
-    
+
     //overloaded constructor for setting a limit and fine too
     Chequing(double givenLim, double givenFine){
         limit = givenLim;
         fine = givenFine;
     }
-    
+
     //getter for limit
     double getLimit(){
         return limit;
     }
-    
+
     //getter for fine
     double getFine(){
         return fine;
     }
-    
+
     //setter for limit
     void setLimit(double givenLim){
         limit = givenLim;
     }
-    
+
     //setter for the fine
     void setFine(double givenFine){
         fine = givenFine;
@@ -115,13 +115,13 @@ class User{
     bool manager;
     bool maintenance;
     bool customer;
-    
+
 public:
     //constructor
     User(){
-        
+
     }
-    
+
     //overloaded constructor
     User(int givenType, int givenID){
         try{
@@ -131,7 +131,7 @@ public:
         }
         setID(givenID);
     }
-    
+
     //getter for type
     int getType(){
         if (manager == true && maintenance == false && customer == false) {
@@ -144,12 +144,12 @@ public:
             throw "userType is set to an invalid value";
         }
     }
-    
+
     //getter for ID
     int getID(){
         return userID;
     }
-    
+
     //setter for type
     void setType(int givenType){
         if (givenType > 002) {
@@ -170,27 +170,27 @@ public:
             }
         }
     }
-    
+
     //setter for ID
     void setID(int givenID){
         userID = givenID;
     }
-    
+
     //method to see if the user is a manager
     bool isManager(){
         return manager;
     }
-    
+
     //method to see if they user is maintenance
     bool isMaintenance(){
         return maintenance;
     }
-    
+
     //method to see if the user is a customer
     bool isCustomer(){
         return customer;
     }
-    
+
 }currentUser, manager, maintenance;
 
 //a class that extends our User class for the purpose of modelling customers
@@ -199,11 +199,11 @@ class Customer: public User{
 	Chequing chequing;
 public:
 	Customer(int ID):User(CUSTOMER, ID){
-        
+
     }
-    
+
     Customer(){
-        
+
     }
 	Account GetSavings(){
 		return savings;
@@ -211,13 +211,13 @@ public:
 	Chequing GetChequing(){
 		return chequing;
 	}
-	
+
 }currentCustomer;
 
 //a class for storing our customer list in
 class customerList{
     //forward_list<Customer> list;
-    
+
 public:
     //method for printing all contents of the class
     void print(){
@@ -225,30 +225,30 @@ public:
         forward_list<Customer>::iterator endIter = list.end();
         Customer temp;
         cout << "Customer ID\tChequing\tSavings\n";
-        
+
         for (; startIter!=endIter; ++startIter) {
             temp = *startIter;
             cout << temp.getID() << "\t\t" << temp.chequing.getAmount() << "\t\t" << temp.savings.getAmount() << "\n";
         }
     }
-    
+
     //method for checking whether a Customer with a given ID already exists in the database
     bool contains(int id){
         forward_list<Customer>::iterator startIter = list.begin();
         forward_list<Customer>::iterator endIter = list.end();
         Customer temp;
-        
+
         for (; startIter != endIter; ++startIter) {
             temp = *startIter;
-            
+
             if(temp.getID() == id){
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     //method for inserting new Customers into the list
     void insert(Customer cust){
         if(contains(cust.getID())){
@@ -257,7 +257,7 @@ public:
             list.push_front(cust);
         }
     }
-    
+
     //method for finding a particular Customer
     Customer * find(int id){
         if (!contains(id)) {
@@ -266,15 +266,15 @@ public:
             forward_list<Customer>::iterator startIter = list.begin();
             forward_list<Customer>::iterator endIter = list.end();
             Customer * itemAddress;
-            
+
             for (; startIter != endIter; ++startIter) {
                 itemAddress = &*startIter;
-                
+
                 if(itemAddress->getID() == id){
                     return itemAddress;
                 }
             }
-            
+
             throw "Error: Customer not found\n";
 
         }
@@ -287,12 +287,12 @@ public:
     bool hasSavings(){
         return savings.isOpen();
     }
-    
+
     //function to see whether the customer has a chequings account
     bool hasChequing(){
         return chequing.isOpen();
     }
-  
+
 };*/
 
 //if(User.UserType.Manager){}
@@ -301,7 +301,7 @@ public:
 	*
 	*Classes
 	*
-	
+
 class Manager{
 	//open & close accounts
 	// see view critical details or 1 or all customers
@@ -311,7 +311,7 @@ class Manager{
 
 class Customer{
 	// manageable # (Ex: 100)
-	// must has either or both a 
+	// must has either or both a
 	// savings account/chequings account only his/her account permissions
 	// can use multiple operations within one session
 	int id;
@@ -325,7 +325,7 @@ class Customer{
 bool withdraw(Account act){
 	//string value;
 	double value;
-	// null checks	
+	// null checks
 	cout << "Please enter a value to withdraw\n";
 	cin >> value;
 	//val = value;
@@ -341,12 +341,12 @@ bool withdraw(Account act){
 		//act.amount -= value;
 		act.setAmount(act.getAmount() - value);
 		return true;
-	}	
+	}
 }
 /*
 // overload for transfering funds
 float withdraw(Account act,float value){
-	
+
 	cout << "Please enter a value to transfer";
 	cin >> value;
 	while(true){
@@ -358,7 +358,7 @@ float withdraw(Account act,float value){
 		}else{
 			act.amount -= value;
 			return value;
-		}	
+		}
 	}
 }
 */
@@ -378,7 +378,7 @@ bool deposit(Account act){
 		}else if(value > 0){
 			cout << "Depositing: $" << value << "\n";
 			//act.amount += value;
-			return true;	
+			return true;
 		}
 	//}
 	return false;
@@ -412,21 +412,21 @@ bool Transfer(Account source,Account destination){
 			cout << "Please enter a valid account./n";
 		}
 	}
-	
+
 	cout << "Successfully transferred funds!";
 	cout << "Your new balances are: /n";
 	cout << toWithdraw.name + " " + toWithdraw.value + " /n";
 	cout << toDeposit.name + " " + toDeposit.value + " /n";*/
-	return true;	
+	return true;
 }
-/*	
+/*
 	/*
 	*
 	* Execution Trace functions
-	* 
-	
+	*
+
 class trace(){
-	// Attributes for whatever data needs to be tracked	
+	// Attributes for whatever data needs to be tracked
 }
 
 function writeToFile(){
@@ -442,7 +442,7 @@ void login(){
     int id;
     int attempts = 0;
 	bool logged = false;
-	
+
 /*	int input;
 while(!(cin >> input))
 {
@@ -451,40 +451,40 @@ while(!(cin >> input))
     cout << endl <<"Column size must be an integer"<< endl << endl;
     cout << "Enter the number of columns: " ;
 }*/
-    
+
     //begin login loop
     while (!logged && attempts < 3) {
         //prompt user, get ID input
         cout << "Please enter your id.\n";
         cin >> id;
-        
+
         //if id matches managerial role, output welcome message, change id and type variables, change logged variable to indicate successful login
         if (id == MANAGER) {
             cout << "Welcome, manager.\n";
             currentUserID = id;
             currentUserType = MANAGER;
             logged = true;
-        
+
         //if id matches maintenance role, output welcome message, change id and type variables, change logged variable to indicate successful login
         }else if(id == MAINTENANCE){
             cout << "Welcome, maintenance.\n";
             currentUserID = id;
             currentUserType = MAINTENANCE;
             logged  = true;
-        
+
         //if id matches customer role, output welcome message, change id and type variables, change logged variable to indicate successful login
         }else if(id == CUSTOMER){
             cout << "Welcome, user.\n";
             currentUserID = id;
             currentUserType = CUSTOMER;
             logged  = true;
-            
+
         //if id matches no roles, output error message and record another login attempt
         }else{
             cout << "Error, invalid ID given.\n";
             attempts++;
         }
-    
+
         if(TEST){
             if(logged){
                 cout << "TEST: userID = " << currentUserID << "\nTEST: userType = " << currentUserType << "\n";
@@ -493,11 +493,11 @@ while(!(cin >> input))
             }
         }
     }
-    
+
     if(TEST){
         cout << "login while loop exited\n" << attempts << " login attempts made\n";
     }
-    
+
     if(attempts == 3){
         cout << "Too many unsuccessful login attempts, program ending.\n";
         exit(1);
@@ -520,7 +520,7 @@ void openAccount(){
 	string savingsAct = "savings";
 	cout << "Please choose what account type you want to open('chequing' or 'savings')\n";
 	cin >> command;
-	
+
 	if(command.compare(cheqAct) == 0){
 		//if(!(currentCustomer.chequing.isOpen()){
 		if(!(currentCustomer.GetChequing()).isOpen()){
@@ -539,7 +539,7 @@ void openAccount(){
 	}
 }
 
-void closeAccount(){	
+void closeAccount(){
 }
 
 Account selectAccount(){
@@ -549,7 +549,7 @@ Account selectAccount(){
 	while(true){
 		cout << "Please select an account type ('chequing' or 'savings')\n";
 		cin >> command;
-	
+
 		if(command.compare(cheqAct) == 0){
 			//if(checkAccountStatus(currentCustomer.chequing)){
 				return currentCustomer.chequing;
@@ -566,7 +566,7 @@ void selectTransferAccounts(){
 	string command;
 	string cheqAct = "chequing";
 	string savingsAct = "savings";
-	
+
 	cout << "Please enter the source account type ('chequing' or 'savings')\n";
 	cin >> command;
 	if(command.compare(cheqAct) == 0){
@@ -578,7 +578,7 @@ void selectTransferAccounts(){
 		cout << "Destination: chequing account. \n";
 		//Transfer(currentUser.getSavings(),currentUser.getChequing())
 		Transfer(currentCustomer.savings,currentCustomer.chequing);
-	}	
+	}
 }
 
 void userSession(){
@@ -592,16 +592,16 @@ void userSession(){
 	string help = "help";
 	string open = "open";
 	string close = "close";
-	
-	Account currentAccount; 
+
+	Account currentAccount;
 	Account otherAccount;
-	
+
 	loggedIn = true;
 	// User interface
 	while(loggedIn){
 		cout << "Please enter a valid command (help for cmd list)\n";
 		cin >> command;
-		
+
 		// Deposit & Withdraw
 		if(command.compare(moneyIn) == 0){
 			currentAccount = selectAccount();
@@ -650,33 +650,33 @@ void test(){
     Customer c1(123);
     Customer c2(124);
     Customer c3(125);
-    
+
     list.insert(c1);
     list.insert(c2);
     list.insert(c3);
-    
+
     cout << list.contains(123) << "\n";
-    
+
     cout << list.contains(124) << "\n";
-    
+
     cout << list.contains(125) << "\n\n";
-    
+
     list.print();
-    
+
     cout << "\n";
-    
+
     //test the find method and its methodology
     try {
         Customer * c1Place = list.find(123);
         c1Place->setID(555);
-        
+
         list.print();
     } catch (string message) {
         cout << message;
     }
-    
-    
-    
+
+
+
 }
 
 int main(){
