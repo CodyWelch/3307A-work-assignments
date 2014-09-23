@@ -1,5 +1,5 @@
 #include<stdio.h>
-//#include<forward_list>
+#include<forward_list>
 #include<string>
 #include<iostream>
 using namespace std;
@@ -205,18 +205,20 @@ public:
     Customer(){
         
     }
-	Account GetSavings(){
-		return savings;
+	Account * getSavings(){
+		Account * acct = &savings;
+        return acct;
 	}
-	Chequing GetChequing(){
-		return chequing;
+	Chequing * getChequing(){
+		Chequing * cheq = &chequing;
+        return cheq;
 	}
 	
 }currentCustomer;
 
 //a class for storing our customer list in
 class customerList{
-    //forward_list<Customer> list;
+    forward_list<Customer> list;
     
 public:
     //method for printing all contents of the class
@@ -228,7 +230,7 @@ public:
         
         for (; startIter!=endIter; ++startIter) {
             temp = *startIter;
-            cout << temp.getID() << "\t\t" << temp.chequing.getAmount() << "\t\t" << temp.savings.getAmount() << "\n";
+            cout << temp.getID() << "\t\t" << temp.getChequing()->getAmount() << "\t\t" << temp.getSavings()->getAmount() << "\n";
         }
     }
     
@@ -279,8 +281,17 @@ public:
 
         }
     }
+    
+    //method for removing a particular customer
+    void remove(int id){
+        if (!contains(id)) {
+            throw "attempted to remove a non-existent customer";
+        } else {
+            //Customer * c = find(id);
+            //list.remove(*c);
+        }
+    }
 };
->>>>>>> f4ffa553f4a436e29fc94a6f41f0d09fed03004e
 
 /*public:
     //function to see whether the customer has a savings account
@@ -523,16 +534,16 @@ void openAccount(){
 	
 	if(command.compare(cheqAct) == 0){
 		//if(!(currentCustomer.chequing.isOpen()){
-		if(!(currentCustomer.GetChequing()).isOpen()){
+		if(!currentCustomer.getChequing()->isOpen()){
 			cout << "Chequing account is now open.\n";
-			currentCustomer.GetChequing().open();
+			currentCustomer.getChequing()->open();
 		}else{
 			cout << "Savings account is already open.\n";
 		}
 	}else if(command.compare(savingsAct) == 0){
-		if(!currentCustomer.savings.isOpen()){
+		if(!currentCustomer.getSavings()->isOpen()){
 			cout << "Savings account is now open.\n";
-			currentCustomer.savings.open();
+			currentCustomer.getSavings()->open();
 		}else{
 			cout << "Savings account is already open.\n";
 		}
@@ -552,11 +563,11 @@ Account selectAccount(){
 	
 		if(command.compare(cheqAct) == 0){
 			//if(checkAccountStatus(currentCustomer.chequing)){
-				return currentCustomer.chequing;
+				return *currentCustomer.getChequing();
 			//}
 		}else if(command.compare(savingsAct) == 0){
 			//if(checkAccountStatus(currentCustomer.savings)){
-				return currentCustomer.savings;
+				return *currentCustomer.getSavings();
 			//}
 		}
 	}
@@ -577,7 +588,7 @@ void selectTransferAccounts(){
 		cout << "Source: savings account. n";
 		cout << "Destination: chequing account. \n";
 		//Transfer(currentUser.getSavings(),currentUser.getChequing())
-		Transfer(currentCustomer.savings,currentCustomer.chequing);
+		Transfer(*currentCustomer.getSavings(),*currentCustomer.getChequing());
 	}	
 }
 
