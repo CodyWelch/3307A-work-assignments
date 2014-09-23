@@ -18,32 +18,42 @@ using namespace std;
 int currentUserType;
 int currentUserID;
 bool loggedIn;
+Account tempAccount;
 
-/*public:
-    //function to see whether the customer has a savings account
-    bool hasSavings(){
-        return savings.isOpen();
-    }
+bool checkAccountStatus(Account act){
+	if(act.isOpen()){
+		cout << "Opening chequing account.\n";
+		return true;
+	}else{
+		cout << "Chequing account is not open.\n";
+		cout << "Please open a chequing account before proceeding.\n";
+	}
+}
 
-    //function to see whether the customer has a chequings account
-    bool hasChequing(){
-        return chequing.isOpen();
-    }
+Account selectAccount(){
+	string command;
+	string cheqAct = "chequing";
+	string savingsAct = "savings";
+	while(true){
+		cout << "Please select an account type ('chequing' or 'savings')\n";
+		cin >> command;
 
-};*/
-	/*
-	*
-	* Helper Functions
-	*
-	*/
+		if(command.compare(cheqAct) == 0){
+			if(checkAccountStatus(*currentCustomer.getChequing())){
+				return *currentCustomer.getChequing();
+                }
+		}else if(command.compare(savingsAct) == 0){
+			if(checkAccountStatus(*currentCustomer.getSavings())){
+				return *currentCustomer.getSavings();
+			}
+		}
+	}
+}
+
 bool withdraw(Account act){
-	//string value;
 	double value;
-	// null checks
 	cout << "Please enter a value to withdraw\n";
 	cin >> value;
-	//val = value;
-
 	/*if(value.compare("back")){
 		cout << "Cancelling Withdrawal.";
 		return false;
@@ -59,9 +69,7 @@ bool withdraw(Account act){
 }
 
 bool deposit(Account act){
-	//string value;
-	float value;
-	//value = null;
+	double value;
 	//while(value == null){
 		cout << "Please enter a value to deposit\n";
 		cin >> value;
@@ -190,16 +198,6 @@ void login(){
     }
 }
 
-bool checkAccountStatus(Account act){
-	if(act.isOpen()){
-		cout << "Opening chequing account.\n";
-		return true;
-	}else{
-		cout << "Chequing account is not open.\n";
-		cout << "Please open a chequing account before proceeding.\n";
-	}
-}
-
 void openAccount(){
 	string command;
 	string cheqAct = "chequing";
@@ -228,38 +226,19 @@ void openAccount(){
 void closeAccount(){
 }
 
-Account selectAccount(){
-	string command;
-	string cheqAct = "chequing";
-	string savingsAct = "savings";
-	while(true){
-		cout << "Please select an account type ('chequing' or 'savings')\n";
-		cin >> command;
-
-		if(command.compare(cheqAct) == 0){
-			//if(checkAccountStatus(currentCustomer.chequing)){
-				return *currentCustomer.getChequing();
-			//}
-		}else if(command.compare(savingsAct) == 0){
-			//if(checkAccountStatus(currentCustomer.savings)){
-				return *currentCustomer.getSavings();
-			//}
-		}
-	}
-}
-
 void selectTransferAccounts(){
 	string command;
 	string cheqAccount = "chequing";
 	string savingsAccount = "savings";
-
-	cout << "Please enter the source account type ('chequing' or 'savings')\n";
-	cin >> command;
-	if(command.compare(cheqAccount) == 0){
+    Account temp = selectAccount();
+	//cout << "Please enter the source account type ('chequing' or 'savings')\n";
+	//cin >> command;
+	//if(command.compare(cheqAccount) == 0){
+	if((temp.getType()).compare(cheqAccount) == 0){
 		cout << "Source: chequing account. \n";
 		cout << "Destination: savings account. \n";
 		//Transfer(currentUser.getChequing(),currentUser.getSavings())
-	}else if(command.compare(savingsAccount) == 0){
+	}else if((temp.getType()).compare(savingsAccount) == 0){
 		cout << "Source: savings account. n";
 		cout << "Destination: chequing account. \n";
 		//Transfer(currentUser.getSavings(),currentUser.getChequing())
@@ -307,9 +286,9 @@ void userSession(){
 		}else if(command.compare(close) == 0){
 				//closeAccount();
 		}else if(command.compare(cheqAccount) == 0){
-			//cout << currentCustomer.chequing << "\n";
+			currentCustomer.getAccountStatus();
 		}else if(command.compare(savingsAccount) == 0){
-			//cout << currentCustomer.savings << "\n";
+			currentCustomer.getAccountStatus();
 		}else if(command.compare(help) == 0){
 			cout << "'withdraw' to take money out your account\n";
 			cout << "'deposit' to put money into your account\n";

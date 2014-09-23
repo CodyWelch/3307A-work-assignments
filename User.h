@@ -86,7 +86,6 @@ public:
     bool isCustomer(){
         return customer;
     }
-
 }currentUser, manager, maintenance;
 
 //a class that extends our User class for the purpose of modelling customers
@@ -109,5 +108,10 @@ public:
 		Chequing * cheq = &chequing;
         return cheq;
 	}
+
+    void getAccountStatus(){
+        savings.getStatus();
+        chequing.getStatus();
+    }
 
 }currentCustomer;

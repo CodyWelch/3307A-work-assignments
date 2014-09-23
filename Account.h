@@ -51,6 +51,30 @@ public:
     		return type;
     }
 
+    void getStatus(){
+        if(type=="chequing"){
+            cout << "Account: " << type << "\n";
+            cout << getType();
+            if(isOpen()){
+                cout << "Value: $" << getAmount() << "\n";
+                cout << "Account is open. \n";
+            }else{
+                cout << "Account is closed. \n";
+            }
+        }else if(type=="savings"){
+            cout << "Account: " << type << "\n";
+            cout << getType();
+            if(isOpen()){
+                cout << "Value: $" << getAmount() << "\n";
+                cout << "Account is open. \n";
+            }else{
+                cout << "Account is closed. \n";
+            }
+        }else{
+            cout << "No account type yet.\n";
+        }
+    }
+
 };
 
 //the subclass Chequing
