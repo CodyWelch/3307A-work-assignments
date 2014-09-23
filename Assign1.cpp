@@ -2,12 +2,12 @@
 #include<forward_list>
 #include<string>
 #include<iostream>
+#include<stdlib.h>
+#include "account.h"
+#include "User.h"
+#include "CustomerList.h"
+#include "Test.h"
 using namespace std;
-
-//constant values used (atm) for testing login
-#define MANAGER 000
-#define MAINTENANCE 001
-#define CUSTOMER 002
 
 //constant variable used to turn on/off testing mode
 #define TEST 0
@@ -18,280 +18,6 @@ using namespace std;
 int currentUserType;
 int currentUserID;
 bool loggedIn;
-
-//the base class Account used for modeling different accounts
-class Account{
-	bool opened;
-    double amount;
-    string type;
-
-public:
-    //constructor
-    Account(){
-        amount = 0;
-        opened = false;
-    }
-
-    //function to check if the account is open
-    bool isOpen(){
-        if(opened){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    //getter for the current balance
-    double getAmount(){
-        return amount;
-    }
-
-    //setter for teh balance
-    void setAmount(double givenAmt){
-        amount = givenAmt;
-    }
-
-    //a function to open a given account
-    void open(){
-        opened = true;
-    }
-
-    //function to close an account and clear it
-    void close(){
-        opened = false;
-        amount = 0;
-    }
-
-    string getType(){
-    	if(type=="chequing" || type=="savings")
-    		return type;
-    }
-
-};
-
-//the subclass Chequing
-class Chequing : public Account{
-    double limit;
-    double fine;
-
-public:
-    //default constructor
-    Chequing(){
-        limit = 1000.0;
-        fine = 2.0;
-    }
-
-    //overloaded constructor for setting a limit and fine too
-    Chequing(double givenLim, double givenFine){
-        limit = givenLim;
-        fine = givenFine;
-    }
-
-    //getter for limit
-    double getLimit(){
-        return limit;
-    }
-
-    //getter for fine
-    double getFine(){
-        return fine;
-    }
-
-    //setter for limit
-    void setLimit(double givenLim){
-        limit = givenLim;
-    }
-
-    //setter for the fine
-    void setFine(double givenFine){
-        fine = givenFine;
-    }
-};
-
-
-class User{
-	int type;
-	int userID;
-    bool manager;
-    bool maintenance;
-    bool customer;
-
-public:
-    //constructor
-    User(){
-
-    }
-
-    //overloaded constructor
-    User(int givenType, int givenID){
-        try{
-          setType(givenType);
-        }catch(string message){
-            throw message;
-        }
-        setID(givenID);
-    }
-
-    //getter for type
-    int getType(){
-        if (manager == true && maintenance == false && customer == false) {
-            return MANAGER;
-        }else if(manager == false && maintenance == true && customer == false){
-            return MAINTENANCE;
-        }else if(manager == false && maintenance == false && customer == true){
-            return CUSTOMER;
-        }else{
-            throw "userType is set to an invalid value";
-        }
-    }
-
-    //getter for ID
-    int getID(){
-        return userID;
-    }
-
-    //setter for type
-    void setType(int givenType){
-        if (givenType > 002) {
-            throw "Attempted to set UserType to an invalid type.\n";
-        } else {
-            if (givenType == MANAGER) {
-                manager = true;
-                maintenance = false;
-                customer = false;
-            }else if(givenType == MAINTENANCE){
-                manager = false;
-                maintenance = true;
-                customer =false;
-            }else{
-                manager = false;
-                maintenance =false;
-                customer = true;
-            }
-        }
-    }
-
-    //setter for ID
-    void setID(int givenID){
-        userID = givenID;
-    }
-
-    //method to see if the user is a manager
-    bool isManager(){
-        return manager;
-    }
-
-    //method to see if they user is maintenance
-    bool isMaintenance(){
-        return maintenance;
-    }
-
-    //method to see if the user is a customer
-    bool isCustomer(){
-        return customer;
-    }
-
-}currentUser, manager, maintenance;
-
-//a class that extends our User class for the purpose of modelling customers
-class Customer: public User{
-	Account savings;
-	Chequing chequing;
-public:
-	Customer(int ID):User(CUSTOMER, ID){
-
-    }
-
-    Customer(){
-
-    }
-	Account * getSavings(){
-		Account * acct = &savings;
-        return acct;
-	}
-	Chequing * getChequing(){
-		Chequing * cheq = &chequing;
-        return cheq;
-	}
-
-}currentCustomer;
-
-//a class for storing our customer list in
-class customerList{
-    forward_list<Customer> list;
-    
-public:
-    //method for printing all contents of the class
-    void print(){
-        forward_list<Customer>::iterator startIter = list.begin();
-        forward_list<Customer>::iterator endIter = list.end();
-        Customer temp;
-        cout << "Customer ID\tChequing\tSavings\n";
-
-        for (; startIter!=endIter; ++startIter) {
-            temp = *startIter;
-            cout << temp.getID() << "\t\t" << temp.getChequing()->getAmount() << "\t\t" << temp.getSavings()->getAmount() << "\n";
-        }
-    }
-
-    //method for checking whether a Customer with a given ID already exists in the database
-    bool contains(int id){
-        forward_list<Customer>::iterator startIter = list.begin();
-        forward_list<Customer>::iterator endIter = list.end();
-        Customer temp;
-
-        for (; startIter != endIter; ++startIter) {
-            temp = *startIter;
-
-            if(temp.getID() == id){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    //method for inserting new Customers into the list
-    void insert(Customer cust){
-        if(contains(cust.getID())){
-            throw "List already contains a Customer with that ID\n";
-        }else{
-            list.push_front(cust);
-        }
-    }
-
-    //method for finding a particular Customer
-    Customer * find(int id){
-        if (!contains(id)) {
-            throw "There is no customer with the given ID\n";
-        } else {
-            forward_list<Customer>::iterator startIter = list.begin();
-            forward_list<Customer>::iterator endIter = list.end();
-            Customer * itemAddress;
-
-            for (; startIter != endIter; ++startIter) {
-                itemAddress = &*startIter;
-
-                if(itemAddress->getID() == id){
-                    return itemAddress;
-                }
-            }
-
-            throw "Error: Customer not found\n";
-
-        }
-    }
-    
-    //method for removing a particular customer
-    void remove(int id){
-        if (!contains(id)) {
-            throw "attempted to remove a non-existent customer";
-        } else {
-            //Customer * c = find(id);
-            //list.remove(*c);
-        }
-    }
-};
 
 /*public:
     //function to see whether the customer has a savings account
@@ -305,29 +31,6 @@ public:
     }
 
 };*/
-
-//if(User.UserType.Manager){}
-
-	/*
-	*
-	*Classes
-	*
-
-class Manager{
-	//open & close accounts
-	// see view critical details or 1 or all customers
-	// -in a formatted display
-	int id;
-};
-
-class Customer{
-	// manageable # (Ex: 100)
-	// must has either or both a
-	// savings account/chequings account only his/her account permissions
-	// can use multiple operations within one session
-	int id;
-};
-*/
 	/*
 	*
 	* Helper Functions
@@ -354,25 +57,6 @@ bool withdraw(Account act){
 		return true;
 	}
 }
-/*
-// overload for transfering funds
-float withdraw(Account act,float value){
-
-	cout << "Please enter a value to transfer";
-	cin >> value;
-	while(true){
-		if(value.compare("back")){
-			cout << "Cancelling Withdrawal for transfer."
-			return null;
-		} else if(act.amount - value < 0 ){
-			cout << "Insufficient funds";
-		}else{
-			act.amount -= value;
-			return value;
-		}
-	}
-}
-*/
 
 bool deposit(Account act){
 	//string value;
@@ -453,15 +137,6 @@ void login(){
     int id;
     int attempts = 0;
 	bool logged = false;
-
-/*	int input;
-while(!(cin >> input))
-{
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cout << endl <<"Column size must be an integer"<< endl << endl;
-    cout << "Enter the number of columns: " ;
-}*/
 
     //begin login loop
     while (!logged && attempts < 3) {
@@ -575,21 +250,21 @@ Account selectAccount(){
 
 void selectTransferAccounts(){
 	string command;
-	string cheqAct = "chequing";
-	string savingsAct = "savings";
+	string cheqAccount = "chequing";
+	string savingsAccount = "savings";
 
 	cout << "Please enter the source account type ('chequing' or 'savings')\n";
 	cin >> command;
-	if(command.compare(cheqAct) == 0){
+	if(command.compare(cheqAccount) == 0){
 		cout << "Source: chequing account. \n";
 		cout << "Destination: savings account. \n";
 		//Transfer(currentUser.getChequing(),currentUser.getSavings())
-	}else if(command.compare(savingsAct) == 0){
+	}else if(command.compare(savingsAccount) == 0){
 		cout << "Source: savings account. n";
 		cout << "Destination: chequing account. \n";
 		//Transfer(currentUser.getSavings(),currentUser.getChequing())
 		Transfer(*currentCustomer.getSavings(),*currentCustomer.getChequing());
-	}	
+	}
 
 }
 
