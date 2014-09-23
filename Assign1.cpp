@@ -10,7 +10,7 @@ using namespace std;
 #define CUSTOMER 002
 
 //constant variable used to turn on/off testing mode
-#define TEST 0
+#define TEST 1
 
 #define cheqString "chequing"
 
@@ -126,7 +126,7 @@ public:
     User(int givenType, int givenID){
         try{
           setType(givenType);
-        }catch(string message){
+        }catch(char const* message){
             throw message;
         }
         setID(givenID);
@@ -141,7 +141,7 @@ public:
         }else if(manager == false && maintenance == false && customer == true){
             return CUSTOMER;
         }else{
-            throw "userType is set to an invalid value";
+            throw "Exception: userType is set to an invalid value";
         }
     }
 
@@ -153,7 +153,7 @@ public:
     //setter for type
     void setType(int givenType){
         if (givenType > 002) {
-            throw "Attempted to set UserType to an invalid type.\n";
+            throw "Exception: Attempted to set UserType to an invalid type.\n";
         } else {
             if (givenType == MANAGER) {
                 manager = true;
@@ -254,7 +254,7 @@ public:
     //method for inserting new Customers into the list
     void insert(Customer cust){
         if(contains(cust.getID())){
-            throw "List already contains a Customer with that ID\n";
+            throw "Exception: List already contains a Customer with that ID\n";
         }else{
             list.push_front(cust);
         }
@@ -263,7 +263,7 @@ public:
     //method for finding a particular Customer
     Customer * find(int id){
         if (!contains(id)) {
-            throw "There is no customer with the given ID\n";
+            throw "Exception: There is no customer with the given ID\n";
         } else {
             forward_list<Customer>::iterator startIter = list.begin();
             forward_list<Customer>::iterator endIter = list.end();
@@ -277,7 +277,7 @@ public:
                 }
             }
 
-            throw "Error: Customer not found\n";
+            throw "Exception: Error: Customer not found\n";
 
         }
     }
@@ -285,10 +285,37 @@ public:
     //method for removing a particular customer
     void remove(int id){
         if (!contains(id)) {
-            throw "attempted to remove a non-existent customer";
+            throw "Exception: Attempted to remove a non-existent customer\n";
         } else {
-            //Customer * c = find(id);
-            //list.remove(*c);
+            //output for testing
+            if(TEST){
+                cout << "Target id is: " << id << "\n";
+            }
+            //create the iterators used to step through the code
+            forward_list<Customer>::iterator iter1 = list.before_begin();
+            forward_list<Customer>::iterator iter2 = list.begin();
+            forward_list<Customer>::iterator endIter = list.end();
+            
+            //create boolean to indicate success
+            bool found = false;
+            
+            for(; iter2 != endIter; iter1 = iter2, ++iter2 ){
+                //output for testing
+                if(TEST){
+                    cout << "Iterator points to: " << iter2->getID() << "\n";
+                }
+                //if the target is found, remove it
+                if (iter2->getID()==id) {
+                    list.erase_after(iter1);
+                    found = true;
+                    break;
+                }
+            }
+            
+            if(!found){
+                throw "Exception: Removal target was not found\n";
+            }
+            
         }
     }
 };
@@ -657,37 +684,84 @@ void setUp(){
 
 //a helper function to test out our code
 void test(){
-   //test customer insertion and printing
+    cout << "\n" << "Being Tests:\n";
+
+    cout << "\nTesting customer list:";
+    
+    //test customer insertion and printing
     customerList list;
+    cout << "\nList created.\n";
+    
+    cout << "\nTesting Customer creation:";
     Customer c1(123);
     Customer c2(124);
     Customer c3(125);
 
+    cout << "\nCustomers created\n";
+    
+    cout<< "\nTesting Customer insertion:";
     list.insert(c1);
     list.insert(c2);
     list.insert(c3);
+    
+    cout << "\nCustomers inserted";
 
-    cout << list.contains(123) << "\n";
+    cout<< "\nAttempting to find the three inserted customers:";
+    cout << "\nCustomer 1: " << list.contains(123);
 
-    cout << list.contains(124) << "\n";
+    cout << "\nCustomer 2: " << list.contains(124);
 
-    cout << list.contains(125) << "\n\n";
+    cout << "\nCustomer 3: " << list.contains(125) << "\n";
 
+    cout << "\nTesting print() method:\nPrint all Customers:\n";
     list.print();
 
-    cout << "\n";
 
+    cout << "\nTesting editing customers:";
     //test the find method and its methodology
     try {
         Customer * c1Place = list.find(123);
         c1Place->setID(555);
-
+        cout << "\nEdited customer.\nPrint all Customers to check for changes:\n";
         list.print();
-    } catch (string message) {
+    } catch (char const* message) {
         cout << message;
     }
 
+    cout << "\nTesting removal:\n";
+    try{
+        list.remove(555);
+        cout << "Remove method called.\nPrint all Cusomters to check for changes:\n";
+        list.print();
+    }catch(char const* message){
+        cout << message;
+    }
+    
+    cout << "\nTest looking for a non-existant customer:\nlist.contains() value: " << list.contains(123);
+    cout << "\nTry finding it:\n";
+    try {
+        list.find(123);
+    } catch (char const* message) {
+        cout << message;
+    }
+    
+    cout << "\nTest removing a non-existant customer:\nlist.contains() value: " << list.contains(123);
+    cout << "\nTry removing it:\n";
+    try {
+        list.remove(123);
+    } catch (char const* message) {
+        cout << message;
+    }
+    
+    cout << "\nTest inserting an already existing customer:\nlist.contains() value: " << list.contains(124);
+    cout<<"\nTry inserting a duplicate:\n";
+    try {
+        list.insert(124);
+    } catch (char const* message) {
+        cout << message;
+    }
 
+    cout << "\nEnd of tests\n";
 
 }
 
