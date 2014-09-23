@@ -1,3 +1,6 @@
+#include<iostream>
+#include<sstream>
+
 using namespace std;
 
 //constant values used (atm) for testing login
@@ -11,6 +14,8 @@ class User{
     bool manager;
     bool maintenance;
     bool customer;
+    string role;
+    string idString;
 
 public:
     //constructor
@@ -52,14 +57,17 @@ public:
             throw "Exception: Attempted to set UserType to an invalid type.\n";
         } else {
             if (givenType == MANAGER) {
+                role = "manager";
                 manager = true;
                 maintenance = false;
                 customer = false;
             }else if(givenType == MAINTENANCE){
+                role = "maintenance";
                 manager = false;
                 maintenance = true;
                 customer =false;
             }else{
+                role = "customer";
                 manager = false;
                 maintenance =false;
                 customer = true;
@@ -85,6 +93,15 @@ public:
     //method to see if the user is a customer
     bool isCustomer(){
         return customer;
+    }
+
+    string toString(){
+        string mainString;
+        ostringstream convert;
+        convert << userID;
+        mainString = convert.str();
+        mainString = role;
+        return mainString;
     }
 }currentUser, manager, maintenance;
 

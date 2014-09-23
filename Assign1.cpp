@@ -324,6 +324,8 @@ int main(){
         tester.test();
     }else{
         login();
+        traceObj.addToFile(currentUser.toString());
+        traceObj.writeFile();
         userSession();
     }
 }
