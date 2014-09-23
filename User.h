@@ -22,7 +22,7 @@ public:
     User(int givenType, int givenID){
         try{
           setType(givenType);
-        }catch(string message){
+        }catch(char const* message){
             throw message;
         }
         setID(givenID);
@@ -37,7 +37,7 @@ public:
         }else if(manager == false && maintenance == false && customer == true){
             return CUSTOMER;
         }else{
-            throw "userType is set to an invalid value";
+            throw "Exception: userType is set to an invalid value";
         }
     }
 
@@ -49,7 +49,7 @@ public:
     //setter for type
     void setType(int givenType){
         if (givenType > 002) {
-            throw "Attempted to set UserType to an invalid type.\n";
+            throw "Exception: Attempted to set UserType to an invalid type.\n";
         } else {
             if (givenType == MANAGER) {
                 manager = true;

@@ -1,4 +1,5 @@
 //a class for storing our customer list in
+#define TEST 1
 class customerList{
     forward_list<Customer> list;
 
@@ -36,7 +37,7 @@ public:
     //method for inserting new Customers into the list
     void insert(Customer cust){
         if(contains(cust.getID())){
-            throw "List already contains a Customer with that ID\n";
+            throw "Exception: List already contains a Customer with that ID\n";
         }else{
             list.push_front(cust);
         }
@@ -45,7 +46,7 @@ public:
     //method for finding a particular Customer
     Customer * find(int id){
         if (!contains(id)) {
-            throw "There is no customer with the given ID\n";
+            throw "Exception: There is no customer with the given ID\n";
         } else {
             forward_list<Customer>::iterator startIter = list.begin();
             forward_list<Customer>::iterator endIter = list.end();
@@ -59,7 +60,7 @@ public:
                 }
             }
 
-            throw "Error: Customer not found\n";
+            throw "Exception: Error: Customer not found\n";
 
         }
     }
@@ -67,10 +68,37 @@ public:
     //method for removing a particular customer
     void remove(int id){
         if (!contains(id)) {
-            throw "attempted to remove a non-existent customer";
+            throw "Exception: Attempted to remove a non-existent customer\n";
         } else {
-            //Customer * c = find(id);
-            //list.remove(*c);
+            //output for testing
+            if(TEST){
+                cout << "Target id is: " << id << "\n";
+            }
+            //create the iterators used to step through the code
+            forward_list<Customer>::iterator iter1 = list.before_begin();
+            forward_list<Customer>::iterator iter2 = list.begin();
+            forward_list<Customer>::iterator endIter = list.end();
+
+            //create boolean to indicate success
+            bool found = false;
+
+            for(; iter2 != endIter; iter1 = iter2, ++iter2 ){
+                //output for testing
+                if(TEST){
+                    cout << "Iterator points to: " << iter2->getID() << "\n";
+                }
+                //if the target is found, remove it
+                if (iter2->getID()==id) {
+                    list.erase_after(iter1);
+                    found = true;
+                    break;
+                }
+            }
+
+            if(!found){
+                throw "Exception: Removal target was not found\n";
+            }
+
         }
     }
 };

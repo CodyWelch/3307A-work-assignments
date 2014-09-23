@@ -10,7 +10,7 @@
 using namespace std;
 
 //constant variable used to turn on/off testing mode
-#define TEST 0
+#define TEST 1
 
 #define cheqString "chequing"
 
@@ -37,7 +37,6 @@ Account selectAccount(){
 	while(true){
 		cout << "Please select an account type ('chequing' or 'savings')\n";
 		cin >> command;
-
 		if(command.compare(cheqAct) == 0){
 			if(checkAccountStatus(*currentCustomer.getChequing())){
 				return *currentCustomer.getChequing();
@@ -310,44 +309,13 @@ void setUp(){
 }
 
 //a helper function to test out our code
-void test(){
-   //test customer insertion and printing
-    customerList list;
-    Customer c1(123);
-    Customer c2(124);
-    Customer c3(125);
-
-    list.insert(c1);
-    list.insert(c2);
-    list.insert(c3);
-
-    cout << list.contains(123) << "\n";
-
-    cout << list.contains(124) << "\n";
-
-    cout << list.contains(125) << "\n\n";
-
-    list.print();
-
-    cout << "\n";
-
-    //test the find method and its methodology
-    try {
-        Customer * c1Place = list.find(123);
-        c1Place->setID(555);
-
-        list.print();
-    } catch (string message) {
-        cout << message;
-    }
-
-
-
-}
+/*void test(){
+}*/
 
 int main(){
+    Test tester;
     if(TEST){
-        test();
+        tester.test();
     }else{
         login();
         userSession();
