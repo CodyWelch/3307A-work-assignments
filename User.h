@@ -92,13 +92,16 @@ public:
 class Customer: public User{
 	Account savings;
 	Chequing chequing;
+
 public:
 	Customer(int ID):User(CUSTOMER, ID){
 
     }
 
     Customer(){
-
+        savings.setType("savings");
+        cout << "\n";
+        chequing.setType("chequing");
     }
 	Account * getSavings(){
 		Account * acct = &savings;
@@ -108,6 +111,7 @@ public:
 		Chequing * cheq = &chequing;
         return cheq;
 	}
+
 
     void getAccountStatus(){
         savings.getStatus();

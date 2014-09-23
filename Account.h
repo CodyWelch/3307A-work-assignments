@@ -51,10 +51,15 @@ public:
     		return type;
     }
 
+    void setType(string setString){
+        type = setString;
+    }
+
+
     void getStatus(){
         if(type=="chequing"){
             cout << "Account: " << type << "\n";
-            cout << getType();
+            //cout << getType();
             if(isOpen()){
                 cout << "Value: $" << getAmount() << "\n";
                 cout << "Account is open. \n";
@@ -63,7 +68,7 @@ public:
             }
         }else if(type=="savings"){
             cout << "Account: " << type << "\n";
-            cout << getType();
+            //cout << getType();
             if(isOpen()){
                 cout << "Value: $" << getAmount() << "\n";
                 cout << "Account is open. \n";

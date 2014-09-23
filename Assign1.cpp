@@ -7,10 +7,11 @@
 #include "User.h"
 #include "CustomerList.h"
 #include "Test.h"
+#include "eTrace.h"
 using namespace std;
 
 //constant variable used to turn on/off testing mode
-#define TEST 1
+#define TEST 0
 
 #define cheqString "chequing"
 
@@ -85,6 +86,8 @@ bool deposit(Account act){
 	//}
 	return false;
 }
+
+
 // Transfer funds between accounts
 bool Transfer(Account source,Account destination){
 	int transferValue;
@@ -254,6 +257,7 @@ void userSession(){
 	string cheqAccount = "chequing";
 	string savingsAccount = "savings";
 	string transfer = "transfer";
+	string status = "status";
 	string help = "help";
 	string open = "open";
 	string close = "close";
@@ -284,17 +288,18 @@ void userSession(){
 				openAccount();
 		}else if(command.compare(close) == 0){
 				//closeAccount();
-		}else if(command.compare(cheqAccount) == 0){
-			currentCustomer.getAccountStatus();
-		}else if(command.compare(savingsAccount) == 0){
+		}else if(command.compare(status) == 0){
 			currentCustomer.getAccountStatus();
 		}else if(command.compare(help) == 0){
 			cout << "'withdraw' to take money out your account\n";
 			cout << "'deposit' to put money into your account\n";
 			cout << "'open' to open a new account\n";
 			cout << "'close' to close a new account\n";
-			cout << "'chequing' to view balance in chequing account\n";
-			cout << "'savings' to view balance in savings account\n";
+			cout << "'status' to view balance in chequing account\n";
+		}else{
+		    cin.clear();
+            cout << "Please enter a valid command:\n";
+            cout << "type 'help' for command list";
 		}
 	}
 }
@@ -313,6 +318,7 @@ void setUp(){
 }*/
 
 int main(){
+    eTrace traceObj;
     Test tester;
     if(TEST){
         tester.test();

@@ -1,5 +1,5 @@
 //a class for storing our customer list in
-#define TEST 1
+#define TEST 0
 class customerList{
     forward_list<Customer> list;
 
