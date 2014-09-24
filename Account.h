@@ -1,7 +1,4 @@
-//#ifndef ACCOUNT_H
-//#define ACCOUNT_H
 using namespace std;
-
 
 //the base class Account used for modeling different accounts
 class Account{
@@ -30,20 +27,29 @@ public:
         return amount;
     }
 
-    //setter for teh balance
+    //setter for the balance
     void setAmount(double givenAmt){
         amount = givenAmt;
     }
 
+    void addAmount(double input){
+        amount =+ input;
+        cout << "\nYour new " << type << " account balance is: $" << amount << ".\n";
+    }
+
     //a function to open a given account
-    void open(){
+    void openThisAccount(){
         opened = true;
     }
 
     //function to close an account and clear it
-    void close(){
-        opened = false;
-        amount = 0;
+    void closeThisAccount(){
+        if(amount == 0){
+            cout << "Closing " << type << " account.\n";
+            opened = false;
+        }else{
+            cout << "Cannot close account, please withdraw all funds before closing.\n";
+        }
     }
 
     string getType(){
@@ -58,22 +64,22 @@ public:
 
     void getStatus(){
         if(type=="chequing"){
-            cout << "Account: " << type << "\n";
-            //cout << getType();
+            cout << "\nAccount: " << type << "\n";
             if(isOpen()){
-                cout << "Value: $" << getAmount() << "\n";
-                cout << "Account is open. \n";
+                cout << "Status: open. \n";
+                cout << "Value: $" << amount << "\n";
             }else{
-                cout << "Account is closed. \n";
+                cout << "Status: closed. \n";
+                cout << "No Value.\n";
             }
         }else if(type=="savings"){
-            cout << "Account: " << type << "\n";
-            //cout << getType();
+            cout << "\nAccount: " << type << "\n";
             if(isOpen()){
-                cout << "Value: $" << getAmount() << "\n";
-                cout << "Account is open. \n";
+                cout << "Status: open. \n";
+                cout << "Value: $" << amount << "\n";
             }else{
-                cout << "Account is closed. \n";
+                cout << "Status: closed. \n";
+                cout << "No Value.\n";
             }
         }else{
             cout << "No account type yet.\n";
@@ -120,5 +126,3 @@ public:
         fine = givenFine;
     }
 };
-
-//#endif // ACCOUNT_H

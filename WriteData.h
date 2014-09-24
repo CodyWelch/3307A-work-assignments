@@ -1,26 +1,29 @@
 #include<iostream>
 #include<fstream>
 using namespace std;
-
-class eTrace
+class WriteData
 {
     string toBeWritten;
+
     public:
-    eTrace(){
-        toBeWritten = "";
+        WriteData(){
+            toBeWritten = "";
+        }
+
+    void writeOldDataToFile(string old){
+
     }
-    void addToFile(string newData,string timeData){
-        //cout << "Concatenating " << newData << " \n";
+     void addUserDataToFile(string newData,string timeData){
         toBeWritten += newData;
         toBeWritten += " ";
         toBeWritten += timeData;
         toBeWritten += "\n";
     }
 
-    void writeFile(){
+    void writeUserDataToFile(){
         cout << "Writing to file\n";
         ofstream myfile;
-        myfile.open ("LogFile.txt");
+        myfile.open ("UserData.txt");
         myfile << toBeWritten;
         myfile.close();
     }

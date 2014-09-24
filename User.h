@@ -4,8 +4,8 @@
 using namespace std;
 
 //constant values used (atm) for testing login
-#define MANAGER 000
-#define MAINTENANCE 001
+#define MANAGER 777
+#define MAINTENANCE 999
 #define CUSTOMER 002
 
 class User{
@@ -129,10 +129,11 @@ public:
         return cheq;
 	}
 
-
     void getAccountStatus(){
         savings.getStatus();
+        cout << "amount in savings: " << savings.getAmount() << "\n";
         chequing.getStatus();
+        cout << "amount in chequing: " <<chequing.getAmount() << "\n";
     }
 
-}currentCustomer;
+}currentCustomer,customers[100];
