@@ -11,7 +11,7 @@ class eTrace
 
     }
     void addToFile(string newData,string timeData){
-        cout << "Concatenating " << newData << " \n";
+        //cout << "Concatenating " << newData << " \n";
         toBeWritten += newData;
         toBeWritten += " ";
         toBeWritten += timeData;
@@ -19,7 +19,7 @@ class eTrace
     }
 
     void writeFile(){
-        cout << "writing to file\n";
+        cout << "Writing to file\n";
         ofstream myfile;
         myfile.open ("LogFile.txt");
         myfile << toBeWritten;
