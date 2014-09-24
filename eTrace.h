@@ -10,9 +10,12 @@ class eTrace
         toBeWritten = "";
 
     }
-    void addToFile(string newData){
-        cout << "Concatenating toBeWritten\n";
+    void addToFile(string newData,string timeData){
+        cout << "Concatenating " << newData << " \n";
         toBeWritten += newData;
+        toBeWritten += " ";
+        toBeWritten += timeData;
+        toBeWritten += "\n";
     }
 
     void writeFile(){
