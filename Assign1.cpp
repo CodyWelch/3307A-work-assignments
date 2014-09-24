@@ -9,6 +9,8 @@
 #include "CustomerList.h"
 #include "Test.h"
 #include "eTrace.h"
+#include "Reader.h"
+#include "WriteData.h"
 #include<limits>
 using namespace std;
 
@@ -21,10 +23,11 @@ using namespace std;
 #define moneyOut        "withdraw"
 #define help            "help"
 #define logout          "logout"
-//string help = "help";
-//string logout = "logout";
+#define open            "open"
+#define close           "close"
 
-//global user variables, so we can always know what user is currently active, userType will be one of our three constants, userID will be their actual ID
+//global user variables, so we can always know what user is currently active,
+//userType will be one Manager, Customer or Maintenance, userID will be their actual ID
 int currentUserType;
 int currentUserID;
 bool loggedIn;
@@ -35,6 +38,7 @@ eTrace traceObj;
 bool traceActive;
 customerList list;
 
+// Adds new string to trace log
 void execTrace(string trace){
     if(traceActive){
         time_t currentTime = time(0);
@@ -43,18 +47,23 @@ void execTrace(string trace){
     }
 }
 
+// Switches exectuin trace on or off
+// When switched off, current log is written to file
 void traceSwitch(bool onOff){
-    if(onOff){
+    if(onOff==true){
+        cout << "\nSwitching trace to on.\n";
         traceActive = true;
-        execTrace("Trace switched on.");
-    }else{
-        cout << "\nTurning trace off.\n";
-        execTrace("Trace switched off. ");
+        execTrace("Trace switched to on.");
+    }else if(onOff==false){
+        cout << "\nTurning switch to off.\n";
+        execTrace("Trace switched to off. ");
         traceActive = false;
         traceObj.writeFile();
     }
 }
 
+// Returns true if parameter has value in the account
+// Returns false if account is empty
 bool checkAccountHasValue(Account act){
     if(act.getAmount() > 0){
         return true;
@@ -63,7 +72,8 @@ bool checkAccountHasValue(Account act){
     }
     cout << "Invalid account.\n";
 }
-
+// Returns true if account is currently open
+// Returns false if account is currently closed
 bool checkAccountStatus(Account act){
 	if(act.isOpen()){
 		return true;
@@ -71,7 +81,8 @@ bool checkAccountStatus(Account act){
 		return false;
 	}
 }
-
+// Returns true if either account of current Customer is open
+// Returns false if neither account is open
 bool checkAccountsOpen(){
     if(currentCustomer.getChequing()->isOpen() || currentCustomer.getSavings()->isOpen()){
         return true;
@@ -82,6 +93,8 @@ bool checkAccountsOpen(){
     }
 }
 
+// Returns true if both accounts of current Customer are open
+// Returns false if either account is not open
 bool checkBothAccountsOpen(){
     if(currentCustomer.getChequing()->isOpen() && currentCustomer.getSavings()->isOpen()){
         return true;
@@ -95,7 +108,9 @@ bool checkBothAccountsOpen(){
         return false;
     }
 }
-
+// Informs current customer which accounts are open
+// Returns either chequing or savings account
+// Checks if account is open before returning
 Account selectAccount(){
     while(true){
         cout << "\nPlease select an account type ('chequing' or 'savings')\n";
@@ -120,31 +135,50 @@ Account selectAccount(){
 
 bool withdraw(Account act){
 	double value;
-	cout << "\nPlease enter a value to withdraw, ('0' to cancel)\n";
+	bool proceed;
+	cout << "\nPlease enter a positive value to withdraw, ('0' to cancel)\n";
 	cin >> value;
 	if(value < 0 || value == 0){
-        return false;
+        cout << "Cancelling withdrawal.\n";
 
         // Trace Update   ****************************************
         execTrace("Cancelled Withdrawal");
+
+        return false;
 	}
     if(act.getAmount() - value < 0.0 ){
 		cout << "Insufficient funds\n";
 		cout << "You have only $" << act.getAmount() << "in your " << act.getType() << " account.\n";
 
 		// Trace Update   ****************************************
-		execTrace("Withdrawl cancelled, not enough funds.");
+		execTrace("Withdrawal cancelled, not enough funds.");
+
 		return false;
 	}else{
-		act.setAmount(act.getAmount() - value);
+	    if((act.getAmount() - value) < 1000){
+            proceed = false;
+            cout << "Warning, your account is about to go below $1000.\n";
+            cout << "While your account is under $1000, a $2 charge will be applied to each transaction.";
+            cout << "Would you like to continue?";
+        }else{
+            proceed = true;
+        }
+        if(cin >> proceed){
+            if(proceed){
+                    act.setAmount(act.getAmount() - value);
 
-        // Trace Update   ****************************************
-        string loginData;
-        stringstream convert;
-        convert << "Withdrew: " << value << " from " << act.getType() << " account.";
-        loginData = convert.str();
-        execTrace(loginData);
-		return true;
+                    // Trace Update   ****************************************
+                    string loginData;
+                    stringstream convert;
+                    convert << "Withdrew: " << value << " from " << act.getType() << " account.";
+                    loginData = convert.str();
+                    execTrace(loginData);
+                    return true;
+                }else{
+                    // Trace Update   ****************************************
+                    execTrace("Choose to cancel withdraw.");
+                }
+            }
 	}
 }
 
@@ -184,7 +218,6 @@ bool transferWithdraw(Account act){
 		execTrace("Transfer withdraw failed");
 		return false;
 	}else{
-		//act.amount -= value;
 		act.setAmount(act.getAmount() - value);
 
         // Trace Update   ****************************************
@@ -257,7 +290,7 @@ void selectTransferAccounts(){
 
 void closeAccount(){
     tempAccount = selectAccount();
-    tempAccount.close();
+    tempAccount.closeThisAccount();
 
     // Trace Update   ****************************************
     string loginData;
@@ -274,7 +307,7 @@ void openAccount(){
 		//if(!(currentCustomer.chequing.isOpen()){
 		if(!currentCustomer.getChequing()->isOpen()){
 			cout << "Chequing account is now open.\n";
-			currentCustomer.getChequing()->open();
+			currentCustomer.getChequing()->openThisAccount();
 
 			// Trace Update   ****************************************
 			execTrace("Opened chequing account.");
@@ -287,7 +320,7 @@ void openAccount(){
 	}else if(command.compare(savingsAccount) == 0){
 		if(!currentCustomer.getSavings()->isOpen()){
 			cout << "Savings account is now open.\n";
-			currentCustomer.getSavings()->open();
+			currentCustomer.getSavings()->openThisAccount();
 
 			// Trace Update   ****************************************
 			execTrace("Opened Savings account.");
@@ -388,8 +421,6 @@ void userSession(){
     // Command check variables
 	string transfer = "transfer";
 	string status = "status";
-	string open = "open";
-	string close = "close";
 
     // temporary account for transfer function
 	Account currentAccount;
@@ -428,7 +459,9 @@ void userSession(){
 				openAccount();
 		// Access close function
 		}else if(command.compare(close) == 0){
+		    if(checkAccountsOpen()){
 				closeAccount();
+		    }
 		// Access compare function
 		}else if(command.compare(status) == 0){
 			//*currentCustomer.getAccountStatus();
@@ -438,13 +471,13 @@ void userSession(){
 			cout << "'withdraw' to take money out your account.\n";
 			cout << "'deposit' to put money into your account.\n";
 			cout << "'transfer' to move a sum from one account to another.\n";
-			cout << "'open' to open a new account.\n";
-			cout << "'close' to close a new account.\n";
+			cout << "'open' to open an account.\n";
+			cout << "'close' to close an account.\n";
 			cout << "'status' to view account balances and account open/close status.\n";
             cout << "'logout' to end this usersession.\n";
         // Logout of current user session
 		}else if(command.compare(logout) == 0){
-		    cout << "\nLogging out.";
+		    cout << "\nLogging out.\n";
 		    loggedIn = false;
         // Clear invalid input
 		}else{
@@ -464,35 +497,74 @@ void setUp(){
     maintenance.setID(999);
 }
 
+
 void managerSession(){
     loggedIn = true;
+    string view;
+    view = "view";
+    int inputId;
+    inputId = 0;
+
+    cout << "\n Welcome to the Manager User Interface.\n";
     while(loggedIn){
         cout << "\nPlease enter a valid command (type 'help' for cmd list)\n";
         cin >> command;
+        if(command.compare(view) == 0){
+            cout << "\nPlease enter a valid command customer id\n";
+            cout << "OR enter 'all' to view all customer accounts.";
+        }else if(command.compare(open) == 0){
+            cout << "\nPlease enter a valid customer Id\n";
+            if(!(cin >> inputId)){
+                if(list.contains(inputId)){
+                    //*currentCustomer.getChequing();
+                    //currentCustomer = list.find(inputId);
+                    openAccount();
+                }
+            }else{
+                cout <<"Invalid id.\n";
+            }
+        }else if(command.compare(close) == 0){
+            cout << "\nPlease enter a valid customer id\n";
+            cin >> inputId;
+            if(list.contains(inputId)){
+                closeAccount();
+            }
+        }else if(command.compare(logout) == 0){
+            cout << "\nLogging out.\n";
+            loggedIn = false;
+        }else if(command.compare(help) == 0){
+        	cout << "'open' to open a customer account.\n";
+			cout << "'close' to close a customer account.\n";
+            cout << "'view' to view a customer account.\n";
+            cout << "'viewall' to view all customers account.\n";
+            cout << "'logout' to end to session.\n";
+        }else{
+            cout << "\nInvalid command entered, Please try again.\n";
+        }
     }
-    // Transfer accounts
-    // open/close accounts
-
 }
 void maintenanceSession(){
     string traceOn,traceOff;
     traceOn = "traceon";
     traceOff = "traceoff";
     loggedIn = true;
+    cout << "\n Welcome to the Maintenance User Interface.\n";
     while(loggedIn){
         cout << "\nPlease enter a valid command (type 'help' for cmd list)\n";
         cin >> command;
-        if(command.compare(traceOn)){
+        if(command.compare(traceOn) == 0){
             traceSwitch(true);
-        }else if(command.compare(traceOff)){
+        }else if(command.compare(traceOff) == 0){
             traceSwitch(false);
-        }else if(command.compare(help)){
+        }else if(command.compare(help) == 0){
             cout << "'logout' to end this usersession.\n";
             cout << "'traceon' to switch trace on.\n";
             cout << "'traceoff' to switch trace off.\n";
         }else if(command.compare(logout) == 0){
             cout << "\nLogging out.\n";
             loggedIn = false;
+        }else{
+            cout << "\nInvalid command entered, Please try again.\n";
         }
     }
 }
@@ -525,7 +597,12 @@ void populateDataBaseDemo(){
 
 int main(){
     traceActive = false;
+
     Test tester;
+    Reader readFile;
+    WriteData userData;
+    readFile.activateReader();
+
     if(TEST){
         tester.test();
     }

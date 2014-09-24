@@ -38,12 +38,12 @@ public:
     }
 
     //a function to open a given account
-    void open(){
+    void openThisAccount(){
         opened = true;
     }
 
     //function to close an account and clear it
-    void close(){
+    void closeThisAccount(){
         if(amount == 0){
             cout << "Closing " << type << " account.\n";
             opened = false;
