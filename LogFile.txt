@@ -1,2 +1,17 @@
-Customer with userId:22 logged in. Wed Sep 24 01:44:34 2014
+Trace switched to on. Wed Sep 24 18:55:41 2014
+
+Customer with userId:10 logged in. Wed Sep 24 18:55:45 2014
+
+Opened Savings account. Wed Sep 24 18:55:49 2014
+
+Deposited: $100 into savings account.savings account has $100.
+ Wed Sep 24 18:56:12 2014
+
+Deposited: $100 into savings account.savings account has $100.
+Deposited: $50 into savings account.savings account has $50.
+ Wed Sep 24 18:56:22 2014
+
+Maintenance with userId:999 logged in. Wed Sep 24 18:56:27 2014
+
+Trace switched to off.  Wed Sep 24 18:56:29 2014
 
