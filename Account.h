@@ -92,7 +92,6 @@ public:
 class Chequing : public Account{
     double limit;
     double fine;
-    bool belowThreshold;
 
 public:
     //default constructor

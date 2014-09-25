@@ -130,6 +130,7 @@ public:
 	}
 
     void getAccountStatus(){
+        cout << "\nUserId: " << getID() << " .\n";
         savings.getStatus();
         cout << "amount in savings: " << savings.getAmount() << "\n";
         chequing.getStatus();

@@ -32,6 +32,7 @@ using namespace std;
 int currentUserType;
 int currentUserID;
 bool loggedIn;
+double transfer;
 string command;
 string loginData;
 stringstream convert;
@@ -231,6 +232,7 @@ bool transferWithdraw(Account& act){
 
 		return false;
 	}else{
+	    transfer = value;
 		act.setAmount(act.getAmount() - value);
 
         // Trace Update   ****************************************
@@ -249,8 +251,6 @@ bool transferDeposit(Account& destination, int value){
     destination.addAmount(value);
 
     // Trace Update   ****************************************
-    //string loginData;
-    //stringstream convert;
     convert << "Deposited: " << value << " from " << destination.getType() << " account from transfer.";
     loginData = convert.str();
     execTrace(loginData);
@@ -260,23 +260,23 @@ bool transferDeposit(Account& destination, int value){
 
 // Transfer funds between accounts
 bool Transfer(Account& source, Account& destination){
-	int transferValue;
+	double transferValue;
 	while(true){
         cout << "Note, funds will be lost if program cancelled before deposit complete.\n";
-        //cin >> transferValue;
 
         // Terminates transfer if withdrawal or deposit fails
         if(!transferWithdraw(source)){
             return false;
         }
+        transferValue = transfer;
         if(!transferDeposit(destination,transferValue)){
            return false;
         }
 
-        cout << "Successfully transferred funds!";
-        cout << "Your new balances are: /n";
-        cout << source.getType()      << " " << source.getAmount()      << " /n";
-        cout << destination.getType() << " " << destination.getAmount() << " /n";
+        cout << "Successfully transferred funds!\n";
+        cout << "Your new balances are: \n";
+        cout << source.getType()      << " $" << source.getAmount()      << " \n";
+        cout << destination.getType() << " $" << destination.getAmount() << " \n";
 
         // Trace Update   ****************************************
         execTrace("Completed Transfer.");
@@ -286,15 +286,14 @@ bool Transfer(Account& source, Account& destination){
 }
 
 void selectTransferAccounts(){
-    //cout << "\nSource account: \n";
+    cout << "\nSelect Source Account First: ";
     Account * temp = selectAccount();
-    cout << "Select Source Account First: \n";
 	if((temp->getType()).compare(cheqAccount) == 0){
-		cout << "Source: chequing account. \n";
+		cout << "\nSource: chequing account. \n";
 		cout << "Destination: savings account. \n";
 		Transfer(*currentCustomer.getChequing(),*currentCustomer.getSavings());
 	}else if((temp->getType()).compare(savingsAccount) == 0){
-		cout << "Source: savings account. \n";
+		cout << "\nSource: savings account. \n";
 		cout << "Destination: chequing account. \n";
 		Transfer(*currentCustomer.getSavings(),*currentCustomer.getChequing());
 	}
@@ -452,15 +451,9 @@ void userSession(){
 		if(command.compare(moneyIn) == 0){
             if(checkAccountsOpen()){
                 currentAccount = selectAccount();
-                //currentAccount.getStatus();
                 if(checkAccountStatus(*currentAccount)){
                     deposit(*currentAccount);
                 }
-                /*
-                currentAccount = selectAccount();
-                if(checkAccountStatus(currentAccount)){
-                    deposit(currentAccount);
-                }*/
             }
         // Access withdraw function
 		}else if(command.compare(moneyOut) == 0){
@@ -518,37 +511,68 @@ void setUp(){
     maintenance.setID(999);
 }
 
-
+// Manager User Interface
 void managerSession(){
     loggedIn = true;
     string view;
+    string viewAll;
     view = "view";
+    viewAll = "viewall";
     int inputId;
+    int demoPopulation;
+    demoPopulation = 1;
     inputId = 0;
 
     cout << "\n Welcome to the Manager User Interface.\n";
     while(loggedIn){
         cout << "\nPlease enter a valid command (type 'help' for cmd list)\n";
         cin >> command;
+
         if(command.compare(view) == 0){
-            cout << "\nPlease enter a valid command customer id\n";
-            cout << "OR enter 'all' to view all customer accounts.";
+            cout << "\nPlease enter a valid customer Id\n";
+            cin >> inputId;
+            if(list.contains(inputId)){
+                list.find(inputId)->getAccountStatus();
+            }
+        }else if(command.compare(viewAll) == 0){
+            while(demoPopulation != 100){
+                list.find(demoPopulation)->getAccountStatus();
+                demoPopulation++;
+            }
         }else if(command.compare(open) == 0){
             cout << "\nPlease enter a valid customer Id\n";
-            if(!(cin >> inputId)){
-                if(list.contains(inputId)){
-                    //*currentCustomer.getChequing();
-                    //currentCustomer = list.find(inputId);
-                    openAccount();
+            cin >> inputId;
+            if(list.contains(inputId)){
+                list.find(inputId)->getAccountStatus();
+                cout << "'chequing' or 'savings'.\n";
+                cin >> command;
+                if(command.compare(cheqAccount) == 0){
+                    list.find(inputId)->getChequing()->openThisAccount();
+                    cout << "Opened chequing account.\n";
+                }else if(command.compare(savingsAccount) == 0){
+                    list.find(inputId)->getSavings()->openThisAccount();
+                    cout << "Opened savings account.\n";
                 }
             }else{
                 cout <<"Invalid id.\n";
             }
         }else if(command.compare(close) == 0){
-            cout << "\nPlease enter a valid customer id\n";
-            cin >> inputId;
-            if(list.contains(inputId)){
-                closeAccount();
+            cout << "\nPlease enter a valid customer Id\n";
+            if(!(cin >> inputId)){
+                if(list.contains(inputId)){
+                    list.find(inputId)->getAccountStatus();
+                    cout << "'chequing' or 'savings'.\n";
+                    cin >> command;
+                    if(command.compare(cheqAccount) == 0){
+                        list.find(inputId)->getChequing()->closeThisAccount();
+                        cout << "Closed chequing account.\n";
+                    }else if(command.compare(savingsAccount) == 0){
+                        list.find(inputId)->getSavings()->closeThisAccount();
+                        cout << "Closed savings account.\n";
+                    }
+                }else{
+                    cout <<"Invalid id.\n";
+                }
             }
         }else if(command.compare(logout) == 0){
             cout << "\nLogging out.\n";
@@ -564,6 +588,8 @@ void managerSession(){
         }
     }
 }
+
+// Maintenance User Interface
 void maintenanceSession(){
     string traceOn,traceOff;
     traceOn = "traceon";
@@ -622,7 +648,7 @@ int main(){
     Test tester;
     Reader readFile;
     WriteData userData;
-    readFile.activateReader();
+    //readFile.activateReader();
 
     if(TEST){
         tester.test();
