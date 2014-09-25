@@ -33,7 +33,7 @@ public:
     }
 
     void addAmount(double input){
-        amount =+ input;
+        amount += input;
         cout << "\nYour new " << type << " account balance is: $" << amount << ".\n";
     }
 
@@ -92,6 +92,7 @@ public:
 class Chequing : public Account{
     double limit;
     double fine;
+    bool belowThreshold;
 
 public:
     //default constructor

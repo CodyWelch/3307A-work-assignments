@@ -120,12 +120,12 @@ public:
         cout << "\n";
         chequing.setType("chequing");
     }
-	Account * getSavings(){
-		Account * acct = &savings;
+	Account *getSavings(){
+		Account *acct = &savings;
         return acct;
 	}
-	Chequing * getChequing(){
-		Chequing * cheq = &chequing;
+	Chequing *getChequing(){
+		Chequing *cheq = &chequing;
         return cheq;
 	}
 

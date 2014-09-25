@@ -25,6 +25,7 @@ using namespace std;
 #define logout          "logout"
 #define open            "open"
 #define close           "close"
+#define charge          2.0
 
 //global user variables, so we can always know what user is currently active,
 //userType will be one Manager, Customer or Maintenance, userID will be their actual ID
@@ -32,8 +33,10 @@ int currentUserType;
 int currentUserID;
 bool loggedIn;
 string command;
+string loginData;
+stringstream convert;
 
-Account tempAccount;
+Account * tempAccount;
 eTrace traceObj;
 bool traceActive;
 customerList list;
@@ -64,7 +67,7 @@ void traceSwitch(bool onOff){
 
 // Returns true if parameter has value in the account
 // Returns false if account is empty
-bool checkAccountHasValue(Account act){
+bool checkAccountHasValue(Account& act){
     if(act.getAmount() > 0){
         return true;
     }else{
@@ -74,7 +77,7 @@ bool checkAccountHasValue(Account act){
 }
 // Returns true if account is currently open
 // Returns false if account is currently closed
-bool checkAccountStatus(Account act){
+bool checkAccountStatus(Account& act){
 	if(act.isOpen()){
 		return true;
 	}else{
@@ -111,7 +114,7 @@ bool checkBothAccountsOpen(){
 // Informs current customer which accounts are open
 // Returns either chequing or savings account
 // Checks if account is open before returning
-Account selectAccount(){
+Account * selectAccount(){
     while(true){
         cout << "\nPlease select an account type ('chequing' or 'savings')\n";
         if(currentCustomer.getChequing()->isOpen()){
@@ -123,19 +126,21 @@ Account selectAccount(){
         cin >> command;
         if(command.compare(cheqAccount) == 0){
             if(checkAccountStatus(*currentCustomer.getChequing())){
-                return *currentCustomer.getChequing();
+                return currentCustomer.getChequing();
                 }
         }else if(command.compare(savingsAccount) == 0){
             if(checkAccountStatus(*currentCustomer.getSavings())){
-                return *currentCustomer.getSavings();
+                return currentCustomer.getSavings();
             }
         }
     }
 }
 
-bool withdraw(Account act){
+bool withdraw(Account& act){
 	double value;
 	bool proceed;
+	int cont;
+	cont = 1;
 	cout << "\nPlease enter a positive value to withdraw, ('0' to cancel)\n";
 	cin >> value;
 	if(value < 0 || value == 0){
@@ -155,48 +160,55 @@ bool withdraw(Account act){
 
 		return false;
 	}else{
-	    if((act.getAmount() - value) < 1000){
-            proceed = false;
-            cout << "Warning, your account is about to go below $1000.\n";
-            cout << "While your account is under $1000, a $2 charge will be applied to each transaction.";
-            cout << "Would you like to continue?";
-        }else{
-            proceed = true;
-        }
-        if(cin >> proceed){
-            if(proceed){
-                    act.setAmount(act.getAmount() - value);
 
-                    // Trace Update   ****************************************
-                    string loginData;
-                    stringstream convert;
-                    convert << "Withdrew: " << value << " from " << act.getType() << " account.";
-                    loginData = convert.str();
-                    execTrace(loginData);
-                    return true;
-                }else{
-                    // Trace Update   ****************************************
-                    execTrace("Choose to cancel withdraw.");
-                }
+	    // Warning
+	    if((act.getAmount() - value) < 1000 && act.getType().compare(cheqAccount) == 0){
+            proceed = false;
+            cout << "Warning, your account is or is about to go below $1000.\n";
+            cout << "While your chequing account is $1000,\na $2 charge will be applied to each transaction.\n";
+            cout << "\nType '1' to continue withdrawal\n";
+            cin >> cont;
+            if(cont == 1){
+                proceed = true;
+                act.setAmount(act.getAmount() - charge);
+                cout << "$2.00 fine applied\n";
+
+                // Trace Update   ****************************************
+                execTrace("$2.00 Fine applied to withdrawal.\n");
+            }else{
+                // Trace Update   ****************************************
+                execTrace("Choose to cancel withdraw.");
+
+                return false;
+            }
+            cout << "Withdrew: " << value << " from " << act.getType() << " account.\n";
+            act.setAmount(act.getAmount() - value);
+
+            // Trace Update   ****************************************
+            convert << "Withdrew: " << value << " from " << act.getType() << " account.";
+            loginData = convert.str();
+            execTrace(loginData);
+            return true;
             }
 	}
 }
 
-bool deposit(Account act){
+bool deposit(Account& act){
 	double value;
 		cout << "\nPlease enter a value to deposit\n";
-		cout << "Enter 0 to cancel.\n";
+		cout << "(Enter 0 to cancel).\n";
+		cout << "Currently in account: $" << act.getAmount() << "\n";
 		cin >> value;
 		if(value < 0){
 			cout << "Cannot deposit a negative value.\n";
 		}else if(value > 0){
-			cout << "Depositing: $" << value << ".\n";
+			cout << "Depositing: $" << value << "\n";
+
 			act.addAmount(value);
 
             // Trace Update   ****************************************
-            string loginData;
-            stringstream convert;
-            convert << "Deposited: $" << value << " into " << act.getType() << " account.";
+            convert << "Deposited: $" << value << " into " << act.getType() << " account.\n";
+            convert << act.getType() << " account has $" << act.getAmount() << ".\n";
             loginData = convert.str();
             execTrace(loginData);
 			return true;
@@ -206,23 +218,24 @@ bool deposit(Account act){
 	return false;
 }
 
-bool transferWithdraw(Account act){
+bool transferWithdraw(Account& act){
 	double value;
 	cout << "\nPlease enter a value to withdraw for the transfer\n";
 	cin >> value;
     if(act.getAmount() - value < 0.0 ){
 		cout << "Insufficient funds\n";
-		cout << "You have only $" << act.getAmount() << "in your " << act.getType() << " account.\n";
+		cout << "You have only $" << act.getAmount() << " in your " << act.getType() << " account.\n";
 
 		// Trace Update   ****************************************
 		execTrace("Transfer withdraw failed");
+
 		return false;
 	}else{
 		act.setAmount(act.getAmount() - value);
 
         // Trace Update   ****************************************
-        string loginData;
-        stringstream convert;
+        //string loginData;
+        //stringstream convert;
         convert << "Withdrew: " << value << " from " << act.getType() << " account for transfer.";
         loginData = convert.str();
         execTrace(loginData);
@@ -231,13 +244,13 @@ bool transferWithdraw(Account act){
 	}
 }
 
-bool transferDeposit(Account destination, int value){
+bool transferDeposit(Account& destination, int value){
     cout << "Transferring: $" << value << " to " << destination.getType() << " .\n";
     destination.addAmount(value);
 
     // Trace Update   ****************************************
-    string loginData;
-    stringstream convert;
+    //string loginData;
+    //stringstream convert;
     convert << "Deposited: " << value << " from " << destination.getType() << " account from transfer.";
     loginData = convert.str();
     execTrace(loginData);
@@ -246,12 +259,13 @@ bool transferDeposit(Account destination, int value){
 }
 
 // Transfer funds between accounts
-bool Transfer(Account source,Account destination){
+bool Transfer(Account& source, Account& destination){
 	int transferValue;
 	while(true){
-        cout << "Note, funds will be lost if program cancelled before deposit complete.";
-        cin >> transferValue;
+        cout << "Note, funds will be lost if program cancelled before deposit complete.\n";
+        //cin >> transferValue;
 
+        // Terminates transfer if withdrawal or deposit fails
         if(!transferWithdraw(source)){
             return false;
         }
@@ -272,17 +286,16 @@ bool Transfer(Account source,Account destination){
 }
 
 void selectTransferAccounts(){
-    cout << "\nEnter source account.\n";
-    Account temp = selectAccount();
-	if((temp.getType()).compare(cheqAccount) == 0){
+    //cout << "\nSource account: \n";
+    Account * temp = selectAccount();
+    cout << "Select Source Account First: \n";
+	if((temp->getType()).compare(cheqAccount) == 0){
 		cout << "Source: chequing account. \n";
 		cout << "Destination: savings account. \n";
-		//Transfer(currentUser.getChequing(),currentUser.getSavings())
 		Transfer(*currentCustomer.getChequing(),*currentCustomer.getSavings());
-	}else if((temp.getType()).compare(savingsAccount) == 0){
-		cout << "Source: savings account. n";
+	}else if((temp->getType()).compare(savingsAccount) == 0){
+		cout << "Source: savings account. \n";
 		cout << "Destination: chequing account. \n";
-		//Transfer(currentUser.getSavings(),currentUser.getChequing())
 		Transfer(*currentCustomer.getSavings(),*currentCustomer.getChequing());
 	}
 
@@ -290,12 +303,12 @@ void selectTransferAccounts(){
 
 void closeAccount(){
     tempAccount = selectAccount();
-    tempAccount.closeThisAccount();
+    tempAccount->closeThisAccount();
 
     // Trace Update   ****************************************
-    string loginData;
-    stringstream convert;
-    convert << "Account: " << tempAccount.getType()<< " was closed.";
+    //string loginData;
+    //stringstream convert;
+    convert << "Account: " << tempAccount->getType()<< " was closed.";
     loginData = convert.str();
     execTrace(loginData);
 }
@@ -308,6 +321,8 @@ void openAccount(){
 		if(!currentCustomer.getChequing()->isOpen()){
 			cout << "Chequing account is now open.\n";
 			currentCustomer.getChequing()->openThisAccount();
+			cout << "Warning: Chequing account balance is under $1000.00\n";
+			cout << "A $2.00 will be applied to each withdrawal.";
 
 			// Trace Update   ****************************************
 			execTrace("Opened chequing account.");
@@ -380,7 +395,7 @@ bool login(){
                 logged  = true;
 
                 // Trace Update   ****************************************
-                stringstream convert;
+                //stringstream convert;
                 convert << "Manager with userId:" << inputId << " logged in.";
                 loginData = convert.str();
                 execTrace(loginData);
@@ -423,7 +438,7 @@ void userSession(){
 	string status = "status";
 
     // temporary account for transfer function
-	Account currentAccount;
+	Account * currentAccount;
 
     // while loggedIn is true, Main User Interface is available to currentUser
 	loggedIn = true;
@@ -437,16 +452,22 @@ void userSession(){
 		if(command.compare(moneyIn) == 0){
             if(checkAccountsOpen()){
                 currentAccount = selectAccount();
+                //currentAccount.getStatus();
+                if(checkAccountStatus(*currentAccount)){
+                    deposit(*currentAccount);
+                }
+                /*
+                currentAccount = selectAccount();
                 if(checkAccountStatus(currentAccount)){
                     deposit(currentAccount);
-                }
+                }*/
             }
         // Access withdraw function
 		}else if(command.compare(moneyOut) == 0){
 		    if(checkAccountsOpen()){
                 currentAccount = selectAccount();
-                if(checkAccountStatus(currentAccount)){
-                    withdraw(currentAccount);
+                if(checkAccountStatus(*currentAccount)){
+                    withdraw(*currentAccount);
                 }
 		    }
         // Access transfer function
@@ -464,7 +485,7 @@ void userSession(){
 		    }
 		// Access compare function
 		}else if(command.compare(status) == 0){
-			//*currentCustomer.getAccountStatus();
+			currentCustomer.getAccountStatus();
 			execTrace("Printed account status.");
 		// List available commands
 		}else if(command.compare(help) == 0){
