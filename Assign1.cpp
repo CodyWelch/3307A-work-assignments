@@ -464,7 +464,7 @@ void userSession(){
 		    }
 		// Access compare function
 		}else if(command.compare(status) == 0){
-			//*currentCustomer.getAccountStatus();
+			currentCustomer.getAccountStatus();
 			execTrace("Printed account status.");
 		// List available commands
 		}else if(command.compare(help) == 0){
@@ -601,7 +601,7 @@ int main(){
     Test tester;
     Reader readFile;
     WriteData userData;
-    readFile.activateReader();
+    //readFile.activateReader();
 
     if(TEST){
         tester.test();
